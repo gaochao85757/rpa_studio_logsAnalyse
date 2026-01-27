@@ -21,11 +21,14 @@ class LogAnalyzer:
         in_test_case = False
 
         for idx, line in enumerate(self.log_lines):
-            match = re.search(r'测试用例(\d+)', line)
-            if match:
-                test_case_id = match.group(1)
+            match_start = re.search(r'测试用例(\d+)\s*开始', line)
+            match_end = re.search(r'测试用例(\d+)\s*结束', line)
+
+            if match_start:
+                test_case_id = match_start.group(1)
 
                 if in_test_case and current_test_case:
+                    current_test_case['end_line'] = idx - 1
                     self._process_test_case(current_test_case, current_lines)
 
                 current_test_case = {
@@ -33,34 +36,63 @@ class LogAnalyzer:
                     'components': [],
                     'has_error': False,
                     'errors': [],
-                    'start_line': idx
+                    'start_line': idx,
+                    'start_time': self._extract_timestamp(line),
+                    'end_line': None,
+                    'end_time': None
                 }
-                current_lines = []
+                current_lines = [(idx, line)]
                 in_test_case = True
-                current_lines.append((idx, line))
+
+            elif match_end and in_test_case and current_test_case:
+                end_test_case_id = match_end.group(1)
+                if end_test_case_id == current_test_case['test_case_id']:
+                    current_lines.append((idx, line))
+                    current_test_case['end_line'] = idx
+                    current_test_case['end_time'] = self._extract_timestamp(line)
+                    self._process_test_case(current_test_case, current_lines)
+                    current_test_case = None
+                    in_test_case = False
+
             elif in_test_case:
                 current_lines.append((idx, line))
 
         if in_test_case and current_test_case:
+            current_test_case['end_line'] = len(self.log_lines) - 1
             self._process_test_case(current_test_case, current_lines)
 
         return self.test_cases
 
+    def _extract_timestamp(self, line):
+        match = re.search(r'(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})', line)
+        return match.group(1) if match else ''
+
     def _process_test_case(self, test_case, lines):
+        current_component = None
+
         for line_idx, line in lines:
             if 'Exception' in line or 'Error' in line:
                 error_match = re.search(r'(Exception|Error)[:\s]*(.*)', line)
                 if error_match:
+                    error_message = error_match.group(2).strip() if error_match.group(2) else line.strip()
                     test_case['has_error'] = True
                     test_case['errors'].append({
                         'line': line_idx,
-                        'message': error_match.group(2) if error_match.group(2) else line.strip(),
+                        'message': error_message,
                         'context': self._get_context(line_idx)
                     })
 
             component_info = self._extract_component_info(line)
             if component_info:
-                test_case['components'].append(component_info)
+                if current_component:
+                    test_case['components'].append(current_component)
+                current_component = component_info
+            elif current_component:
+                test_case['components'].append(current_component)
+                current_component = None
+
+        if current_component:
+            test_case['components'].append(current_component)
 
         test_case['end_line'] = lines[-1][0] if lines else test_case['start_line']
         self.test_cases.append(test_case)

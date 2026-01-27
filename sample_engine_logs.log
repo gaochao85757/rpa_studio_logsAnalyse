@@ -7,23 +7,28 @@
 2026-01-26 10:00:06 [INFO] Log.Info : 测试用例0002开始
 2026-01-26 10:00:07 [INFO] 组件模块: CoreModule, 组件中文名: 核心模块, 组件分类: 基础, 组件方法名: Initialize, 组件插件包中文名: 基础插件包, 组件唯一标识: Core_Init_001
 2026-01-26 10:00:08 [ERROR] Exception: NullPointerException at DataModule.LoadData - 数据加载失败: 无法找到指定的数据源
-2026-01-26 10:00:09 [INFO] 组件模块: LogicModule, 组件中文名: 逻辑模块, 组件分类: 业务逻辑, 组件方法名: Execute, 组件插件包中文名: 业务逻辑插件包, 组件唯一标识: Logic_Exec_001
-2026-01-26 10:00:10 [INFO] Log.Info : 测试用例0002结束
-2026-01-26 10:00:11 [INFO] Log.Info : 测试用例0003开始
-2026-01-26 10:00:12 [INFO] 组件模块: CoreModule, 组件中文名: 核心模块, 组件分类: 基础, 组件方法名: Initialize, 组件插件包中文名: 基础插件包, 组件唯一标识: Core_Init_001
-2026-01-26 10:00:13 [INFO] 组件模块: UIModule, 组件中文名: 界面模块, 组件分类: UI自动化, 组件方法名: ClickButton, 组件插件包中文名: UI插件包, 组件唯一标识: UI_Click_001
-2026-01-26 10:00:14 [INFO] 组件模块: DataModule, 组件中文名: 数据模块, 组件分类: 数据处理, 组件方法名: SaveData, 组件插件包中文名: 数据处理插件包, 组件唯一标识: Data_Save_001
-2026-01-26 10:00:15 [INFO] Log.Info : 测试用例0003结束
-2026-01-26 10:00:16 [INFO] Log.Info : 测试用例0004开始
-2026-01-26 10:00:17 [INFO] 组件模块: CoreModule, 组件中文名: 核心模块, 组件分类: 基础, 组件方法名: Initialize, 组件插件包中文名: 基础插件包, 组件唯一标识: Core_Init_001
-2026-01-26 10:00:18 [INFO] 组件模块: UIModule, 组件中文名: 界面模块, 组件分类: UI自动化, 组件方法名: InputText, 组件插件包中文名: UI插件包, 组件唯一标识: UI_Input_001
-2026-01-26 10:00:19 [ERROR] Error: TimeoutException at UIModule.InputText - 等待元素超时: 无法在指定时间内找到输入框
-2026-01-26 10:00:20 [INFO] 组件模块: UIModule, 组件中文名: 界面模块, 组件分类: UI自动化, 组件方法名: ClickButton, 组件插件包中文名: UI插件包, 组件唯一标识: UI_Click_002
-2026-01-26 10:00:21 [INFO] Log.Info : 测试用例0004结束
-2026-01-26 10:00:22 [INFO] Log.Info : 测试用例0005开始
-2026-01-26 10:00:23 [INFO] 组件模块: CoreModule, 组件中文名: 核心模块, 组件分类: 基础, 组件方法名: Initialize, 组件插件包中文名: 基础插件包, 组件唯一标识: Core_Init_001
-2026-01-26 10:00:24 [INFO] 组件模块: DataModule, 组件中文名: 数据模块, 组件分类: 数据处理, 组件方法名: ProcessData, 组件插件包中文名: 数据处理插件包, 组件唯一标识: Data_Process_001
-2026-01-26 10:00:25 [INFO] 组件模块: LogicModule, 组件中文名: 逻辑模块, 组件分类: 业务逻辑, 组件方法名: Validate, 组件插件包中文名: 业务逻辑插件包, 组件唯一标识: Logic_Validate_001
-2026-01-26 10:00:26 [ERROR] Exception: ValidationException at LogicModule.Validate - 数据验证失败: 字段值超出范围
-2026-01-26 10:00:27 [ERROR] Error: DataFormatException at DataModule.ProcessData - 数据格式错误: 日期格式不正确
-2026-01-26 10:00:28 [INFO] Log.Info : 测试用例0005结束
+2026-01-26 10:00:09 [INFO] Log.Info : 测试用例0002结束
+2026-01-26 10:00:10 [INFO] Log.Info : 测试用例0003开始
+2026-01-26 10:00:11 [INFO] 组件模块: CoreModule, 组件中文名: 核心模块, 组件分类: 基础, 组件方法名: Initialize, 组件插件包中文名: 基础插件包, 组件唯一标识: Core_Init_001
+2026-01-26 10:00:12 [INFO] 组件模块: UIModule, 组件中文名: 界面模块, 组件分类: UI自动化, 组件方法名: ClickButton, 组件插件包中文名: UI插件包, 组件唯一标识: UI_Click_001
+2026-01-26 10:00:13 [INFO] 组件模块: DataModule, 组件中文名: 数据模块, 组件分类: 数据处理, 组件方法名: SaveData, 组件插件包中文名: 数据处理插件包, 组件唯一标识: Data_Save_001
+2026-01-26 10:00:14 [INFO] Log.Info : 测试用例0003结束
+2026-01-26 10:00:15 [INFO] Log.Info : 测试用例0004开始
+2026-01-26 10:00:16 [INFO] 组件模块: CoreModule, 组件中文名: 核心模块, 组件分类: 基础, 组件方法名: Initialize, 组件插件包中文名: 基础插件包, 组件唯一标识: Core_Init_001
+2026-01-26 10:00:17 [INFO] 组件模块: UIModule, 组件中文名: 界面模块, 组件分类: UI自动化, 组件方法名: InputText, 组件插件包中文名: UI插件包, 组件唯一标识: UI_Input_001
+2026-01-26 10:00:18 [ERROR] Error: TimeoutException at UIModule.InputText - 等待元素超时: 无法在指定时间内找到输入框元素
+2026-01-26 10:00:19 [INFO] Log.Info : 测试用例0004结束
+2026-01-26 10:00:20 [INFO] Log.Info : 测试用例0005开始
+2026-01-26 10:00:21 [INFO] 组件模块: CoreModule, 组件中文名: 核心模块, 组件分类: 基础, 组件方法名: Initialize, 组件插件包中文名: 基础插件包, 组件唯一标识: Core_Init_001
+2026-01-26 10:00:22 [INFO] 组件模块: DataModule, 组件中文名: 数据模块, 组件分类: 数据处理, 组件方法名: ProcessData, 组件插件包中文名: 数据处理插件包, 组件唯一标识: Data_Process_001
+2026-01-26 10:00:23 [INFO] 组件模块: LogicModule, 组件中文名: 逻辑模块, 组件分类: 业务逻辑, 组件方法名: Validate, 组件插件包中文名: 业务逻辑插件包, 组件唯一标识: Logic_Validate_001
+2026-01-26 10:00:24 [ERROR] Exception: ValidationException at LogicModule.Validate - 数据验证失败: 字段值超出预期范围
+2026-01-26 10:00:25 [ERROR] Error: DataFormatException at DataModule.ProcessData - 数据格式错误: 日期格式不正确，应为 YYYY-MM-DD
+2026-01-26 10:00:26 [INFO] Log.Info : 测试用例0005结束
+2026-01-26 10:00:27 [INFO] Log.Info : 测试用例0006开始
+2026-01-26 10:00:28 [INFO] 组件模块: CoreModule, 组件中文名: 核心模块, 组件分类: 基础, 组件方法名: Initialize, 组件插件包中文名: 基础插件包, 组件唯一标识: Core_Init_001
+2026-01-26 10:00:29 [INFO] 组件模块: FileModule, 组件中文名: 文件模块, 组件分类: 文件操作, 组件方法名: ReadFile, 组件插件包中文名: 文件操作插件包, 组件唯一标识: File_Read_001
+2026-01-26 10:00:30 [INFO] 组件模块: DataModule, 组件中文名: 数据模块, 组件分类: 数据处理, 组件方法名: ParseData, 组件插件包中文名: 数据处理插件包, 组件唯一标识: Data_Parse_001
+2026-01-26 10:00:31 [INFO] 组件模块: LogicModule, 组件中文名: 逻辑模块, 组件分类: 业务逻辑, 组件方法名: ProcessData, 组件插件包中文名: 业务逻辑插件包, 组件唯一标识: Logic_Process_001
+2026-01-26 10:00:32 [INFO] 组件模块: FileModule, 组件中文名: 文件模块, 组件分类: 文件操作, 组件方法名: WriteFile, 组件插件包中文名: 文件操作插件包, 组件唯一标识: File_Write_001
+2026-01-26 10:00:33 [INFO] Log.Info : 测试用例0006结束

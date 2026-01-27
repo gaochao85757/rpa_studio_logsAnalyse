@@ -393,6 +393,40 @@
             font-size: 64px;
             margin-bottom: 20px;
         }
+
+        .timestamp {
+            font-size: 11px;
+            color: #999;
+            margin-top: 4px;
+        }
+
+        .component-row {
+            display: grid;
+            grid-template-columns: 100px 120px 100px 120px 140px 140px;
+            gap: 8px;
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .component-row:last-child {
+            border-bottom: none;
+        }
+
+        .component-header {
+            font-weight: 600;
+            color: #666;
+            font-size: 11px;
+            margin-bottom: 8px;
+            display: grid;
+            grid-template-columns: 100px 120px 100px 120px 140px 140px;
+            gap: 8px;
+        }
+
+        .component-cell {
+            font-size: 12px;
+            color: #333;
+            word-break: break-word;
+        }
     </style>
 </head>
 <body>
@@ -445,7 +479,12 @@
                     <thead>
                         <tr>
                             <th>测试用例ID</th>
-                            <th>组件信息</th>
+                            <th>组件模块</th>
+                            <th>组件中文名</th>
+                            <th>组件分类</th>
+                            <th>组件方法名</th>
+                            <th>组件插件包中文名</th>
+                            <th>组件唯一标识</th>
                             <th>执行状态</th>
                             <th>错误信息</th>
                         </tr>
@@ -592,54 +631,82 @@
 
                 let componentsHtml = '';
                 if (testCase.components.length > 0) {
-                    testCase.components.forEach(comp => {
-                        componentsHtml += `
-                            <div class="component-item">
-                                ${comp.module ? `<div><span class="component-label">组件模块:</span><span class="component-value">${comp.module}</span></div>` : ''}
-                                ${comp.name_cn ? `<div><span class="component-label">组件中文名:</span><span class="component-value">${comp.name_cn}</span></div>` : ''}
-                                ${comp.category ? `<div><span class="component-label">组件分类:</span><span class="component-value">${comp.category}</span></div>` : ''}
-                                ${comp.method ? `<div><span class="component-label">组件方法名:</span><span class="component-value">${comp.method}</span></div>` : ''}
-                                ${comp.plugin_name ? `<div><span class="component-label">组件插件包中文名:</span><span class="component-value">${comp.plugin_name}</span></div>` : ''}
-                                ${comp.unique_id ? `<div><span class="component-label">组件唯一标识:</span><span class="component-value">${comp.unique_id}</span></div>` : ''}
-                            </div>
-                        `;
+                    testCase.components.forEach((comp, compIdx) => {
+                        const module = comp.module || '';
+                        const nameCn = comp.name_cn || '';
+                        const category = comp.category || '';
+                        const method = comp.method || '';
+                        const pluginName = comp.plugin_name || '';
+                        const uniqueId = comp.unique_id || '';
+
+                        if (compIdx === 0) {
+                            row.innerHTML = `
+                                <td rowspan="${testCase.components.length}" style="vertical-align: top;">
+                                    <div class="test-case-id">${testCase.test_case_id}</div>
+                                    ${testCase.start_time ? `<div class="timestamp">开始: ${testCase.start_time}</div>` : ''}
+                                    ${testCase.end_time ? `<div class="timestamp">结束: ${testCase.end_time}</div>` : ''}
+                                </td>
+                                <td>${module}</td>
+                                <td>${nameCn}</td>
+                                <td>${category}</td>
+                                <td>${method}</td>
+                                <td>${pluginName}</td>
+                                <td>${uniqueId}</td>
+                                <td rowspan="${testCase.components.length}" style="vertical-align: top;">
+                                    ${testCase.has_error ? '<span class="status-error">异常报错</span>' : '<span class="status-normal">分析结果正常</span>'}
+                                </td>
+                                <td rowspan="${testCase.components.length}" style="vertical-align: top;">
+                                    ${getErrorsHtml(testCase)}
+                                </td>
+                            `;
+                        } else {
+                            const extraRow = document.createElement('tr');
+                            extraRow.innerHTML = `
+                                <td>${module}</td>
+                                <td>${nameCn}</td>
+                                <td>${category}</td>
+                                <td>${method}</td>
+                                <td>${pluginName}</td>
+                                <td>${uniqueId}</td>
+                            `;
+                            tbody.appendChild(extraRow);
+                        }
                     });
                 } else {
-                    componentsHtml = '<span style="color: #999;">无组件信息</span>';
+                    row.innerHTML = `
+                        <td><span class="test-case-id">${testCase.test_case_id}</span></td>
+                        <td colspan="6" style="color: #999; padding: 20px;">无组件信息</td>
+                        <td>${testCase.has_error ? '<span class="status-error">异常报错</span>' : '<span class="status-normal">分析结果正常</span>'}</td>
+                        <td>${getErrorsHtml(testCase)}</td>
+                    `;
                 }
-
-                const status = testCase.has_error ?
-                    '<span class="status-error">异常报错</span>' :
-                    '<span class="status-normal">分析结果正常</span>';
-
-                let errorsHtml = '';
-                if (testCase.has_error && testCase.errors.length > 0) {
-                    testCase.errors.forEach((error, errIndex) => {
-                        errorsHtml += `
-                            <div style="margin-bottom: 8px;">
-                                <span style="color: #e74c3c; font-weight: 500;">${error.message.substring(0, 100)}</span>
-                                <br>
-                                <a class="error-link" onclick="showLogContext(${testCase.start_line + error.line}, ${error.context.start}, ${error.context.end})">
-                                    查看日志上下文 (行 ${error.context.start + 1} - ${error.context.end + 1})
-                                </a>
-                            </div>
-                        `;
-                    });
-                } else {
-                    errorsHtml = '<span style="color: #27ae60;">无错误</span>';
-                }
-
-                row.innerHTML = `
-                    <td><span class="test-case-id">${testCase.test_case_id}</span></td>
-                    <td>${componentsHtml}</td>
-                    <td>${status}</td>
-                    <td>${errorsHtml}</td>
-                `;
 
                 tbody.appendChild(row);
             });
 
             resultsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function getErrorsHtml(testCase) {
+            if (!testCase.has_error || testCase.errors.length === 0) {
+                return '<span style="color: #27ae60;">无错误</span>';
+            }
+
+            let errorsHtml = '';
+            testCase.errors.forEach((error, errIndex) => {
+                const errorMessage = error.message.length > 80 ? error.message.substring(0, 80) + '...' : error.message;
+                errorsHtml += `
+                    <div style="margin-bottom: 12px;">
+                        <div style="color: #e74c3c; font-weight: 500; font-size: 12px; margin-bottom: 4px;">
+                            ${errorMessage}
+                        </div>
+                        <a class="error-link" onclick="showLogContext(${testCase.start_line + error.line}, ${error.context.start}, ${error.context.end})">
+                            查看日志上下文 (行 ${error.context.start + 1} - ${error.context.end + 1})
+                        </a>
+                    </div>
+                `;
+            });
+            return errorsHtml;
         }
 
         async function showLogContext(lineIdx, start, end) {
