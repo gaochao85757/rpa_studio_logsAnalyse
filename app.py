@@ -167,10 +167,9 @@ def analyze_default_log():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@app.route('/log/context/<int:error_line>/<int:page>')
-def get_log_context(error_line, page):
+@app.route('/log/context/<int:error_line>')
+def get_log_context(error_line):
     try:
-        lines_per_page = 50
         with open('/workspace/static/engine.log', 'r', encoding='utf-8') as f:
             all_lines = f.readlines()
 
@@ -180,14 +179,8 @@ def get_log_context(error_line, page):
         start = max(0, error_line - context_size)
         end = min(total_lines, error_line + context_size + 1)
 
-        total_pages = (end - start + lines_per_page - 1) // lines_per_page
-        current_page = max(0, min(page, total_pages - 1))
-
-        page_start = start + current_page * lines_per_page
-        page_end = min(page_start + lines_per_page, end)
-
         context_lines = []
-        for i in range(page_start, page_end):
+        for i in range(start, end):
             context_lines.append({
                 'line_num': i,
                 'content': all_lines[i].strip(),
@@ -196,12 +189,11 @@ def get_log_context(error_line, page):
 
         return jsonify({
             'lines': context_lines,
-            'current_page': current_page,
-            'total_pages': total_pages,
             'error_line': error_line,
             'total_lines': total_lines,
             'context_start': start,
-            'context_end': end
+            'context_end': end,
+            'context_size': context_size
         })
     except Exception as e:
         return jsonify({'error': str(e)}), 500

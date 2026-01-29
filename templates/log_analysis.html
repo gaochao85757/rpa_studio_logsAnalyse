@@ -230,47 +230,45 @@
             padding: 20px;
             border-radius: 8px;
             font-family: 'Courier New', monospace;
-            font-size: 13px;
+            font-size: 12px;
             line-height: 1.6;
-            overflow-x: auto;
+            overflow-y: auto;
             white-space: pre-wrap;
-            max-height: 600px;
+            max-height: 70vh;
         }
 
-        .pagination {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-            margin-top: 20px;
-            padding: 15px;
-            background: #f8f9ff;
-            border-radius: 8px;
+        .log-line {
+            padding: 4px 8px;
+            border-left: 3px solid transparent;
+            white-space: pre-wrap;
+            word-break: break-word;
         }
 
-        .pagination-btn {
-            padding: 8px 16px;
-            border: 1px solid #667eea;
-            background: white;
-            color: #667eea;
-            border-radius: 4px;
+        .log-line.error {
+            background: rgba(231, 76, 60, 0.3);
+            border-left-color: #e74c3c;
+        }
+
+        .log-line .line-num {
+            color: #75715e;
+            margin-right: 15px;
+            user-select: none;
+            display: inline-block;
+            width: 60px;
+            text-align: right;
+        }
+
+        .error-summary {
+            max-width: 300px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
             cursor: pointer;
-            transition: all 0.2s;
         }
 
-        .pagination-btn:hover:not(:disabled) {
-            background: #667eea;
-            color: white;
-        }
-
-        .pagination-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .page-info {
-            color: #666;
-            font-size: 14px;
+        .error-summary.expanded {
+            white-space: normal;
+            overflow: visible;
         }
     </style>
 </head>
@@ -325,16 +323,11 @@
     <div class="modal" id="errorModal">
         <div class="modal-content">
             <div class="modal-header">
-                <span class="modal-title">错误详情</span>
+                <span class="modal-title">错误日志上下文（共500行）</span>
                 <button class="modal-close" id="closeModal">&times;</button>
             </div>
             <div class="modal-body">
                 <div class="error-detail" id="errorDetail"></div>
-                <div class="pagination" id="pagination" style="display: none;">
-                    <button class="pagination-btn" id="prevPage">上一页</button>
-                    <span class="page-info" id="pageInfo">第 1 页 / 共 1 页</span>
-                    <button class="pagination-btn" id="nextPage">下一页</button>
-                </div>
             </div>
         </div>
     </div>
@@ -343,14 +336,6 @@
         const errorModal = document.getElementById('errorModal');
         const closeModal = document.getElementById('closeModal');
         const errorDetail = document.getElementById('errorDetail');
-        const pagination = document.getElementById('pagination');
-        const prevPageBtn = document.getElementById('prevPage');
-        const nextPageBtn = document.getElementById('nextPage');
-        const pageInfo = document.getElementById('pageInfo');
-
-        let currentErrorLine = -1;
-        let currentPage = 0;
-        let totalPages = 0;
 
         async function loadLogAndAnalyze() {
             try {
@@ -401,17 +386,38 @@
 
         function getErrorsHtml(testCase) {
             let errorsHtml = '<div style="margin-top: 8px;">';
-            testCase.errors.forEach(error => {
-                const errorMessage = error.message.length > 60 ? error.message.substring(0, 60) + '...' : error.message;
+            testCase.errors.forEach((error, idx) => {
+                const errorMessage = error.message;
+                const shortMessage = errorMessage.length > 80 ? errorMessage.substring(0, 80) + '...' : errorMessage;
+
                 errorsHtml += `
                     <div style="margin-bottom: 8px;">
-                        <div style="color: #e74c3c; font-weight: 500; font-size: 11px; margin-bottom: 4px;">${errorMessage}</div>
-                        <a class="error-link" onclick="showErrorDetail(${error.line})">查看详细错误</a>
+                        <div style="color: #e74c3c; font-weight: 500; font-size: 11px; margin-bottom: 4px; padding: 4px; background: #fff5f5; border-radius: 3px;">
+                            <span class="error-summary" onclick="toggleError(this)" title="点击展开/折叠">${shortMessage}</span>
+                        </div>
+                        <div style="margin-top: 4px;">
+                            <a class="error-link" onclick="showErrorContext(${error.line})">查看日志上下文（500行）</a>
+                        </div>
                     </div>
                 `;
             });
             errorsHtml += '</div>';
             return errorsHtml;
+        }
+
+        function toggleError(element) {
+            const parent = element.closest('div[style*="color: #e74c3c"]');
+            if (parent) {
+                const summary = parent.querySelector('.error-summary');
+                if (summary) {
+                    summary.classList.toggle('expanded');
+                    const fullText = summary.getAttribute('data-full-text') || element.textContent;
+                    if (!summary.getAttribute('data-full-text')) {
+                        summary.setAttribute('data-full-text', fullText);
+                    }
+                    element.textContent = summary.classList.contains('expanded') ? fullText : fullText.substring(0, 80) + (fullText.length > 80 ? '...' : '');
+                }
+            }
         }
 
         function escapeHtml(text) {
@@ -423,24 +429,16 @@
                 .replace(/"/g, '&quot;');
         }
 
-        async function showErrorDetail(errorLine) {
-            currentErrorLine = errorLine;
-            currentPage = 0;
-            await loadLogContext(errorLine, currentPage);
-        }
-
-        async function loadLogContext(errorLine, page) {
+        async function showErrorContext(errorLine) {
             try {
-                const response = await fetch(`/log/context/${errorLine}/${page}`);
+                const response = await fetch(`/log/context/${errorLine}`);
                 const data = await response.json();
 
                 if (data.error) {
                     errorDetail.innerHTML = `<div style="color: #e74c3c;">加载失败: ${data.error}</div>`;
+                    errorModal.classList.add('active');
                     return;
                 }
-
-                totalPages = data.total_pages;
-                currentPage = data.current_page;
 
                 let contextHtml = '';
                 data.lines.forEach(line => {
@@ -454,35 +452,20 @@
 
                 errorDetail.innerHTML = contextHtml;
 
-                // 更新分页信息
-                if (totalPages > 1) {
-                    pagination.style.display = 'flex';
-                    pageInfo.textContent = `第 ${currentPage + 1} 页 / 共 ${totalPages} 页 (显示行 ${data.context_start + 1} - ${data.context_end})`;
-                    prevPageBtn.disabled = currentPage === 0;
-                    nextPageBtn.disabled = currentPage >= totalPages - 1;
-                } else {
-                    pagination.style.display = 'none';
-                }
+                // 滚动到错误行
+                setTimeout(() => {
+                    const errorLineElement = errorDetail.querySelector('.log-line.error');
+                    if (errorLineElement) {
+                        errorLineElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }, 100);
 
                 errorModal.classList.add('active');
             } catch (error) {
                 errorDetail.innerHTML = `<div style="color: #e74c3c;">加载失败: ${error.message}</div>`;
+                errorModal.classList.add('active');
             }
         }
-
-        prevPageBtn.addEventListener('click', () => {
-            if (currentPage > 0) {
-                currentPage--;
-                loadLogContext(currentErrorLine, currentPage);
-            }
-        });
-
-        nextPageBtn.addEventListener('click', () => {
-            if (currentPage < totalPages - 1) {
-                currentPage++;
-                loadLogContext(currentErrorLine, currentPage);
-            }
-        });
 
         closeModal.addEventListener('click', () => {
             errorModal.classList.remove('active');
