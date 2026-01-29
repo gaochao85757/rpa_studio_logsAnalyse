@@ -1,0 +1,483 @@
+|2026-01-29 13:55:56,817|   INFO|pid:2544878|tid:140270006922240|base.py:  73|None|None|engine|None|----————————————————————{"requestId":"nP48fDkxjf","payload":{"id":"VINCIuWxP0","root":"/home/admin/.config/Z-Factory/applications/c_aWJA3HC2xG","code_path":"/home/admin/.config/Z-Factory/sandbox/project_1769666156794","packageName":"我的电脑流程535","pluginList":[{"type":"Log","version":"1.0.0.0"},{"type":"Element","version":"1.0.4.0"}],"isExternal":0,"desktopStatus":0,"triggerStatus":0},"action":"run"}|
+|2026-01-29 13:55:56,818|  DEBUG|pid:2544878|tid:140270006922240|base.py:  88|nP48fDkxjf|recv|Z-Factory|run|{"requestId":"nP48fDkxjf","payload":{"id":"VINCIuWxP0","root":"/home/admin/.config/Z-Factory/applications/c_aWJA3HC2xG","code_path":"/home/admin/.config/Z-Factory/sandbox/project_1769666156794","packageName":"我的电脑流程535","pluginList":[{"type":"Log","version":"1.0.0.0"},{"type":"Element","version":"1.0.4.0"}],"isExternal":0,"desktopStatus":0,"triggerStatus":0},"action":"run"}|
+|2026-01-29 13:55:56,818|   INFO|pid:2544878|tid:140270006922240|message.py:  55|None|None|engine|None|pool....................True|
+|2026-01-29 13:55:56,819|   INFO|pid:2544878|tid:140270006922240|message.py:  56|None|None|engine|None|receive action "run"|
+|2026-01-29 13:55:56,820|   INFO|pid:2544878|tid:140270006922240|message.py:  69|None|None|engine|None|run in process pool|
+|2026-01-29 13:55:56,821|   INFO|pid:2544878|tid:140270006922240|message.py:  71|None|None|engine|None|create task run: {'requestId': 'nP48fDkxjf', 'payload': {'id': 'VINCIuWxP0', 'root': '/home/admin/.config/Z-Factory/applications/c_aWJA3HC2xG', 'code_path': '/home/admin/.config/Z-Factory/sandbox/project_1769666156794', 'packageName': '我的电脑流程535', 'pluginList': [{'type': 'Log', 'version': '1.0.0.0'}, {'type': 'Element', 'version': '1.0.4.0'}], 'isExternal': 0, 'desktopStatus': 0, 'triggerStatus': 0}, 'action': 'run'}|
+|2026-01-29 13:55:56,821|   INFO|pid:2544878|tid:140270006922240|message.py:  84|None|None|engine|None|run in poll again|
+|2026-01-29 13:55:56,834|   INFO|pid:2544967|tid:140270006922240|action_dispatch.py:  40|None|None|engine|None|执行run|
+|2026-01-29 13:55:57,093|  DEBUG|pid:2544967|tid:140270006922240|message_run.py:  75|None|None|engine|None|request id: nP48fDkxjf, payload id: VINCIuWxP0|
+|2026-01-29 13:55:57,093|  DEBUG|pid:2544967|tid:140270006922240|message_run.py:  76|None|None|engine|None|task root: /home/admin/.config/Z-Factory/applications/c_aWJA3HC2xG, rt: None, task name: None, client is bot: 0, package_name: 我的电脑流程535|
+|2026-01-29 13:55:57,093|  DEBUG|pid:2544967|tid:140270006922240|message_run.py:  78|None|None|engine|None|payload log level: -2, virtual desktop: 0|
+|2026-01-29 13:55:57,093|   INFO|pid:2544967|tid:140270006922240|message_run.py: 243|'screencapPath'|
+|2026-01-29 13:55:57,095|   INFO|pid:2544967|tid:140270006922240|message_run.py: 150|None|None|engine|None|current display -> :0|
+|2026-01-29 13:55:57,095|   INFO|pid:2544878|tid:140269889791744|ws_server.py:  85|nP48fDkxjf|send|Z-Factory|run|{"requestId": "nP48fDkxjf", "action": "run", "payload": {"id": "VINCIuWxP0", "status": "started"}}(sync)|
+|2026-01-29 13:55:57,096|   INFO|pid:2544967|tid:140270006922240|message_run.py: 151|None|None|engine|None|share.virtual_display_env ->  :0|
+|2026-01-29 13:55:57,096|   INFO|pid:2544967|tid:140270006922240|message_run.py: 152|None|None|engine|None|run action|
+|2026-01-29 13:55:57,097|   INFO|pid:2544967|tid:140270006922240|plugin_util.py: 432|None|None|engine|None|PluginPrepare -> Start -> [{"type": "Log", "version": "1.0.0.0"}, {"type": "Element", "version": "1.0.4.0"}]|
+|2026-01-29 13:55:57,097|   INFO|pid:2544967|tid:140270006922240|plugin_util.py: 440|None|None|engine|None|PluginPrepare -> use plugins|
+|2026-01-29 13:55:57,106|   INFO|pid:2544967|tid:140270006922240|plugin_util.py: 465|None|None|engine|None|PluginPrepare -> prepare dependency
+      name  version
+0      Log  1.0.0.0
+1  Element  1.0.4.0|
+|2026-01-29 13:55:57,117|   INFO|pid:2544967|tid:140270006922240|plugin_util.py: 478|None|None|engine|None|PluginPrepare -> copy plugins
+      name  version
+2    Mouse  1.0.4.0
+0      Log  1.0.0.0
+1  Element  1.0.4.0|
+|2026-01-29 13:55:57,118|   INFO|pid:2544967|tid:140270006922240|plugin_util.py: 512|None|None|engine|None|PluginPrepare -> Finished with {"version": "6.8.3-20251212-094734", "plugins": []}|
+|2026-01-29 13:55:57,118|  DEBUG|pid:2544967|tid:140270006922240|message_run.py: 155|None|None|engine|None|write task to sandbox|
+|2026-01-29 13:55:57,119|   INFO|pid:2544967|tid:140270006922240|sandbox_util.py: 104|None|None|engine|None|rpaProjectTemplate  is /opt/apps/com.sz.rpa.studio/files/resources/app.asar.unpacked/resources/rpa-engine/rpa-engine-6.8.3/resource/rpa_project_templateSource.py|
+|2026-01-29 13:55:57,124|   INFO|pid:2544967|tid:140270006922240|sandbox_util.py: 125|None|None|engine|None|2|
+|2026-01-29 13:55:57,125|   INFO|pid:2544967|tid:140270006922240|sandbox_util.py: 153|None|None|engine|None|使用插件[{'type': 'Log', 'version': '1.0.0.0'}, {'type': 'Element', 'version': '1.0.4.0'}]|
+|2026-01-29 13:55:57,125|   INFO|pid:2544967|tid:140270006922240|message_run.py: 157|None|None|engine|None|write task to sandbox succeed|
+|2026-01-29 13:55:57,125|  DEBUG|pid:2544967|tid:140270006922240|message_run.py: 159|None|None|engine|None|init task log|
+|2026-01-29 13:55:57,198|   INFO|pid:2544878|tid:140269889791744|ws_server.py:  85|nP48fDkxjf|send|Z-Factory|log|{"requestId": "nP48fDkxjf", "action": "log", "payload": {"id": "VINCIuWxP0", "text": "构建环境", "taskNum": "2e271236-fcd7-11f0-a520-000000000001"}}(sync)|
+|2026-01-29 13:55:57,222|  DEBUG|pid:2544967|tid:140270006922240|message_run.py: 187|None|None|engine|None|new rpa instance|
+|2026-01-29 13:55:57,222|  DEBUG|pid:2544967|tid:140270006922240|message_run.py: 361|None|None|engine|None|start _get_component_config_dict|
+|2026-01-29 13:55:57,227|  DEBUG|pid:2544967|tid:140270006922240|message_run.py: 381|None|None|engine|None|finish _get_component_config_dict|
+|2026-01-29 13:55:57,228|  DEBUG|pid:2544967|tid:140270006922240|message_run.py: 477|None|None|engine|None|配置文件不存在|
+|2026-01-29 13:55:57,228|   INFO|pid:2544967|tid:140270006922240|message_run.py: 189|None|None|engine|None|new rpa instance succeed|
+|2026-01-29 13:55:57,228|   INFO|pid:2544967|tid:140270006922240|message_run.py: 197|None|None|engine|None|------------ rpa.main() start -----------|
+|2026-01-29 13:55:57,229|   INFO|pid:2544967|tid:140270006922240|log_service.py:  25|None|None|engine|None|Log.Info : 测试用例0001开始|
+|2026-01-29 13:55:57,230|  DEBUG|pid:2544967|tid:140270006922240|option_util.py: 326|None|None|engine|None|组件模块为Element|
+|2026-01-29 13:55:57,231|  DEBUG|pid:2544967|tid:140270006922240|option_util.py: 328|None|None|engine|None|组件中文名为点击界面元素|
+|2026-01-29 13:55:57,231|  DEBUG|pid:2544967|tid:140270006922240|option_util.py: 330|None|None|engine|None|组件分类为["interface_element","webBrowser"]|
+|2026-01-29 13:55:57,231|  DEBUG|pid:2544967|tid:140270006922240|option_util.py: 332|None|None|engine|None|组件方法名为Click_V3|
+|2026-01-29 13:55:57,231|  DEBUG|pid:2544967|tid:140270006922240|option_util.py: 334|None|None|engine|None|组件插件包中文名为["interface_element","webBrowser"]|
+|2026-01-29 13:55:57,232|  DEBUG|pid:2544967|tid:140270006922240|option_util.py: 336|None|None|engine|None|组件注释为
+    category: ["interface_element","webBrowser"]
+    label: "点击界面元素"
+    message: "模拟鼠标 $2 $3 界面的 $0"
+    logo: Click
+    description: "点击软件界面或浏览器中的按钮、图片、链接等界面元素，便于后续的其他自动化操作。"
+    tags:
+    - label: "点击"
+    - label: "目标点击"
+    - label: "元素点击"
+    - label: "元素"
+    params:
+    - defaultValue: ''
+      displayType: comboSelector
+      displayParam: {
+        elementTypes: [
+          "normal",
+          "cv"
+        ]
+        }
+      wrapperType: commander
+      wrapperParam: {
+            operation: {
+              displayParam: {
+                '"${elementType==normal}"': [
+                  {
+                    "label": "模拟人工操作",
+                    "value": "1",
+                    "disabled": False
+                  },
+                  {
+                    "label": "后台接口操作",
+                    "value": "0",
+                    "disabled": False
+                  }
+                ],
+                '"${elementType==cv}"': [
+                  {
+                    "label": "模拟人工操作",
+                    "value": "1",
+                    "disabled": False
+                  },
+                  {
+                    "label": "后台接口操作",
+                    "value": "0",
+                    "disabled": True
+                  }
+                ],
+                '"${default}"': [
+                  {
+                    "label": "模拟人工操作",
+                    "value": "1"
+                  },
+                  {
+                    "label": "后台接口操作",
+                    "value": "0"
+                  }
+                ]
+              },
+              value :{
+                 '"${elementType==normal}"': "1",
+                 '"${elementType==cv}"': "1"
+                }
+            }
+          }
+      label: "目标选择"
+      name: ui_selector
+      vType: ["rpa_element"]
+      tip: 拾取或选择需点击的界面元素
+      domProps: {
+        placeholder_exp: '请拾取或选择界面元素'
+      }
+      validatorRules: {"compAttrValue": [{"required": 1, "message": '必填'}]}
+    - defaultValue: ''
+      label: "浏览器类型"
+      name: browser_type
+      wrapperType: dependencyShowBrowserType
+      displayType: browserTypeInput
+      tip: 指当前执行操作所在的浏览器类型，如360、qax、firefox等。可选择“打开网页”或“获取网页Tab对象”组件输出变量的子变量。
+      vType: ["rpa_hweb", "rpa_hWeb_type"]
+    - defaultValue: '0'
+      displayParam:
+      - label: "左键"
+        value: '0'
+      - label: "右键"
+        value: '1'
+      displayType: buttonGroup
+      label: "鼠标按键"
+      name: clickway
+    - defaultValue: '0'
+      displayParam:
+      - label: "单击"
+        value: '0'
+      - label: "双击"
+        value: '1'
+      displayType: dropDownSelect
+      label: "点击类型"
+      name: clickfunc
+    - defaultValue: '1'
+      displayParam:
+      - label: "模拟人工操作"
+        value: '1'
+      - label: "后台接口操作"
+        value: '0'
+      displayType: buttonGroup
+      label: "模拟类型"
+      name: operation
+      tip: '将模拟类型参数移动到基础属性，默认选模拟人工操作。规则如下：当目标元素为CV智能拾取-模拟类型参数中后台接口操作选项置灰不可选，当目标元素为普通拾取-模拟类型参数正常展示'
+    - defaultValue: {"random": "0","cursorPosition": "0","offset": {"x": "0","y": "0"}}
+      displayParam: [{"label": "自定义位置","value": "0"},{"label": "随机位置","value": "1"}]
+      label: "点击位置"
+      displayType: clickPosition
+      name: click_data
+      tip: '选择随机偏移，则会随机点击界面元素的任意位置'
+      isAdvanced: 1
+    - defaultValue: '1'
+      displayParam:
+      - label: "关闭"
+        value: '0'
+      - label: "开启"
+        value: '1'
+      displayType: radioLeft
+      label: "校验运行结果"
+      name: is_verify
+      tip: 开启校验，将智能校验点击动作的执行结果，发现组件运行中的异常和错误
+      isAdvanced: 1
+    - defaultValue: '1'
+      isAdvanced: 1
+      displayParam: {
+        "text": "展示鼠标移动轨迹"
+      }
+      displayType: checkbox
+      label: ""
+      name: show_track
+    |
+|2026-01-29 13:55:57,232|  DEBUG|pid:2544967|tid:140270006922240|option_util.py: 338|None|None|engine|None|组件唯一标识为Element.Click_V3|
+|2026-01-29 13:55:57,232|  DEBUG|pid:2544967|tid:140270006922240|option_util.py: 412|None|None|engine|None|超时时间为30000|
+|2026-01-29 13:55:57,233|  DEBUG|pid:2544967|tid:140270006922240|option_util.py: 414|None|None|engine|None|跳过错误为0|
+|2026-01-29 13:55:57,233|   INFO|pid:2544967|tid:140270006922240|option_util.py: 423|None|None|engine|None|组件执行前总延迟0.2s|
+|2026-01-29 13:55:57,299|   INFO|pid:2544878|tid:140269889791744|ws_server.py:  85|nP48fDkxjf|send|Z-Factory|log|{"requestId": "nP48fDkxjf", "action": "log", "payload": {"id": "VINCIuWxP0", "text": "开始运行", "taskNum": "2e271237-fcd7-11f0-a520-000000000001"}}(sync)|
+|2026-01-29 13:55:57,300|   INFO|pid:2544878|tid:140269889791744|ws_server.py:  85|VH5qOA2YIn|send|Z-Factory|log|{"requestId": "VH5qOA2YIn", "action": "log", "payload": {"text": "测试用例0001开始", "id": "VINCIuWxP0", "logType": "console", "taskNum": "2e271238-fcd7-11f0-a520-000000000001"}}(sync)|
+|2026-01-29 13:55:57,300|   INFO|pid:2544878|tid:140269889791744|ws_server.py:  85|a2nIJgrS6V|send|Z-Factory|trace_log|{"requestId": "a2nIJgrS6V", "action": "trace_log", "payload": {"componentsName": "点击界面元素", "componentSequence": "2", "command": "Element.Click_V3", "date": "2026-01-29 13:55:57", "taskId": "io5cd", "taskName": "流程块1", "componentId": "kxTL4", "componentRelationIds": [], "componentType": 0, "eventType": 0, "executeType": 1, "uuid": "2e271239-fcd7-11f0-a520-e02be9b9c283", "level": -1, "is_in_loop": false, "loop_relations": [], "taskNum": "2e27123a-fcd7-11f0-a520-000000000001"}}(sync)|
+|2026-01-29 13:55:57,434|   INFO|pid:2544967|tid:140270006922240|option_util.py:  86|None|None|engine|None|[Element.Click_V3] entering|
+|2026-01-29 13:55:57,434|  DEBUG|pid:2544967|tid:140270006922240|option_util.py:  64|No module named 'packages.Element.py.validate_schema'|
+|2026-01-29 13:55:57,435|   INFO|pid:2544967|tid:140270006922240|option_util.py:  92|None|None|engine|None|组件重组间隔时间: 20ms|
+|2026-01-29 13:55:57,435|  DEBUG|pid:2544967|tid:140270006922240|retry_util.py:  30|None|None|engine|None|超时时间为30000|
+|2026-01-29 13:55:57,835|   INFO|pid:2544967|tid:140270006922240|element_service.py: 716|None|None|engine|None|执行自定义点击|
+|2026-01-29 13:55:57,860|   INFO|pid:2544967|tid:140270006922240|browser_service.py:  69|None|None|engine|None|new browser service|
+|2026-01-29 13:55:57,860|   INFO|pid:2544967|tid:140270006922240|browser_service.py: 387|None|None|engine|None|path is :/opt/apps/com.sz.rpa.studio/files/resources/app.asar.unpacked/resources/rpa-engine/rpa-engine-6.8.3/extentions|
+|2026-01-29 13:55:57,861|   INFO|pid:2544967|tid:140270006922240|browser_unix_socket.py:  41|None|None|engine|None|sock file is /tmp/unix_server_chrome_host_360.sock|
+|2026-01-29 13:55:57,863|   INFO|pid:2544967|tid:140270006922240|browser_unix_socket.py:  72|None|None|engine|None|total len :75|
+|2026-01-29 13:55:57,865|   INFO|pid:2544967|tid:140270006922240|browser_service.py: 391|None|None|engine|None|getCodeId is AI-indeedRPA|
+|2026-01-29 13:55:57,867|   INFO|pid:2544967|tid:140270006922240|browser_service.py: 394|None|None|engine|None|js 已注入|
+|2026-01-29 13:55:57,871|   INFO|pid:2544967|tid:140270006922240|browser_service.py: 285|None|None|engine|None|query active tab|
+|2026-01-29 13:55:57,879|   INFO|pid:2544967|tid:140270006922240|browser_unix_socket.py:  72|None|None|engine|None|total len :73|
+|2026-01-29 13:55:57,881|   INFO|pid:2544967|tid:140270006922240|browser_service.py: 354|None|None|engine|None|判断缓存tab id|
+|2026-01-29 13:55:57,891|   INFO|pid:2544967|tid:140270006922240|browser_unix_socket.py:  72|None|None|engine|None|total len :487|
+|2026-01-29 13:55:57,895|   INFO|pid:2544967|tid:140270006922240|browser_service.py: 141|None|None|engine|None|tab id 为 1806535447 参数为：[{'name': 'title', 'value': '百度一下，你就知道', 'pattern': 'equal', 'accurate': 'true', 'textValue': '百度一下，你就知道', 'expressionValue': '"百度一下，你就知道"'}, {'name': 'url', 'value': 'https://www.baidu.com/', 'pattern': 'equal', 'accurate': 'false', 'textValue': 'https://www.baidu.com/', 'expressionValue': '"https://www.baidu.com/"'}]|
+|2026-01-29 13:55:57,908|   INFO|pid:2544967|tid:140270006922240|browser_unix_socket.py:  72|None|None|engine|None|total len :50|
+|2026-01-29 13:55:57,947|   INFO|pid:2544967|tid:140270006922240|browser_unix_socket.py:  72|None|None|engine|None|total len :71|
+|2026-01-29 13:55:57,951|   INFO|pid:2544967|tid:140270006922240|browser_unix_socket.py:  72|None|None|engine|None|total len :50|
+|2026-01-29 13:55:57,954|   INFO|pid:2544967|tid:140270006922240|browser_unix_socket.py:  72|None|None|engine|None|total len :182|
+|2026-01-29 13:55:57,954|   INFO|pid:2544967|tid:140270006922240|browser_node.py:  58|None|None|engine|None|request is 3    result is {'height': 23, 'isFirefox': 0, 'left': 1793.984375, 'paddingTop': 132, 'top': 151, 'width': 26.015625, 'windowLeft': -4, 'windowTop': 0}|
+|2026-01-29 13:55:58,074|  DEBUG|pid:2544967|tid:140270006922240|retry_util.py:  39|None|None|engine|None|运行次数为1   <class 'retrying.Attempt'>|
+|2026-01-29 13:55:58,078|   INFO|pid:2544967|tid:140270006922240|option_util.py: 107|None|None|engine|None|[Element.Click_V3] success|
+|2026-01-29 13:55:58,083|   INFO|pid:2544967|tid:140270006922240|option_util.py: 432|None|None|engine|None|组件执行后总延迟0.05s|
+|2026-01-29 13:55:58,111|   INFO|pid:2544878|tid:140269889791744|ws_server.py:  85|Np4BqDQ250|send|Z-Factory|trace_log|{"requestId": "Np4BqDQ250", "action": "trace_log", "payload": {"componentsName": "点击界面元素", "componentSequence": "2", "command": "Element.Click_V3", "date": "2026-01-29 13:55:58", "taskId": "io5cd", "taskName": "流程块1", "componentId": "kxTL4", "componentRelationIds": [], "componentType": 0, "eventType": 1, "useTime": 0, "executeType": 1, "uuid": "2e271239-fcd7-11f0-a520-e02be9b9c283", "level": 2, "is_in_loop": false, "loop_relations": [], "taskNum": "2e27123b-fcd7-11f0-a520-000000000001"}}(sync)|
+|2026-01-29 13:55:58,136|   INFO|pid:2544967|tid:140270006922240|log_service.py:  25|None|None|engine|None|Log.Info : 测试用例0001结束|
+|2026-01-29 13:55:58,137|   INFO|pid:2544967|tid:140270006922240|log_service.py:  25|None|None|engine|None|Log.Info : 测试用例0002开始|
+|2026-01-29 13:55:58,145|  DEBUG|pid:2544967|tid:140270006922240|option_util.py: 326|None|None|engine|None|组件模块为Element|
+|2026-01-29 13:55:58,147|  DEBUG|pid:2544967|tid:140270006922240|option_util.py: 328|None|None|engine|None|组件中文名为输入文本|
+|2026-01-29 13:55:58,149|  DEBUG|pid:2544967|tid:140270006922240|option_util.py: 330|None|None|engine|None|组件分类为["interface_element", "webBrowser"]|
+|2026-01-29 13:55:58,151|  DEBUG|pid:2544967|tid:140270006922240|option_util.py: 332|None|None|engine|None|组件方法名为SetValue_V4|
+|2026-01-29 13:55:58,153|  DEBUG|pid:2544967|tid:140270006922240|option_util.py: 334|None|None|engine|None|组件插件包中文名为["interface_element", "webBrowser"]|
+|2026-01-29 13:55:58,156|  DEBUG|pid:2544967|tid:140270006922240|option_util.py: 336|None|None|engine|None|组件注释为
+    category: ["interface_element", "webBrowser"]
+    label: "输入文本"
+    message: "输入文本 $2 到指定输入框 $0"
+    logo: SetValue
+    icon: icon-shuruwenbenkuang
+    description: "在指定的界面输入框、文本框、搜索框等元素中输入一段文本内容"
+    tags:
+    - label: "文本内容"
+    - label: "元素文本"
+    - label: "设置文本"
+    - label: "元素"
+    - label: "输入"
+    params:
+    - defaultValue: ''
+      displayType: comboSelector
+      displayParam: {
+            "elementTypes": [
+              "normal",
+              "cv"
+            ]
+        }
+      wrapperType: commander
+      wrapperParam: {
+            operation: {
+              displayParam: {
+                '"${elementType==normal}"': [
+                  {
+                    "label": "模拟输入",
+                    "value": "1",
+                    "disabled": False
+                  },
+                  {
+                    "label": "后台接口",
+                    "value": "0",
+                    "disabled": False
+                  },
+                  {
+                    "label": "剪切板粘贴",
+                    "value": "2",
+                    "disabled": False
+                  }
+                ],
+                '"${elementType==cv}"': [
+                  {
+                    "label": "模拟输入",
+                    "value": "1",
+                    "disabled": False
+                  },
+                  {
+                    "label": "后台接口",
+                    "value": "0",
+                    "disabled": True
+                  },
+                  {
+                    "label": "剪切板粘贴",
+                    "value": "2",
+                    "disabled": False
+                  }
+                ],
+                '"${default}"': [
+                  {
+                    "label": "模拟输入",
+                    "value": "1"
+                  },
+                  {
+                    "label": "后台接口",
+                    "value": "0"
+                  },
+                  {
+                    "label": "剪切板粘贴",
+                    "value": "2"
+                  }
+                ]
+              },
+              value :{
+                 '"${elementType==normal}"': "1",
+                 '"${elementType==cv}"': "1"
+                }
+            }
+          }
+      label: "目标输入框"
+      name: uiSelector
+      tip: '拾取或选择需输入文本的界面元素'
+      domProps: {
+          placeholder_exp: '请拾取或选择界面元素'
+        }
+      validatorRules: {"compAttrValue": [{"required": 1, "message": '必填'}]}
+      vType: ["rpa_element"]
+    - defaultValue: ''
+      label: "浏览器类型"
+      name: browser_type
+      wrapperType: dependencyShowBrowserType
+      displayType: browserTypeInput
+      tip: 指当前执行操作所在的浏览器类型，如360、qax、firefox等。可选择“打开网页”或“获取网页Tab对象”组件输出变量的子变量。
+      vType: ["rpa_hweb", "rpa_hWeb_type"]
+    - defaultValue: '""'
+      label: "输入内容"
+      name: text
+      displayType: textArea
+      validatorRules: {"compAttrValue": [{"required": 1, "message": '必填'}]}
+      vType: ["rpa_str", "rpa_num"]
+    - defaultValue: '0'
+      displayParam:
+      - label: "替换原文"
+        value: '0'
+      - label: "追加输入"
+        value: '1'
+      displayType: radioGroup
+      label: "输入方式"
+      name: input_type
+      tip: "替换原文：清空文本框中原有文本，以需要输入的文本替换原有文本;追加输入：文本框中原有文本保持不变，在原有文本末尾追加输入内容"
+    - defaultValue: '0'
+      displayParam: {
+        "text": "输入完成回车"
+      }
+      displayType: checkbox
+      label: ""
+      name: isEnter
+      tip: '例如搜索等地方的输入框，输入完成后点击回车键，将触发搜索或下一步动作'
+    - defaultValue: '1'
+      displayParam:
+      - label: "模拟输入"
+        value: '1'
+      - label: "后台接口"
+        value: '0'
+      - label: "剪切板粘贴"
+        value: '2'
+      displayType: buttonGroup
+      label: "输入类型"
+      tip: "模拟输入：模拟人工操作键盘按键逐个字符输入;后台接口：不占用键盘按键，调用后台接口实现输入;剪切板粘贴：模拟Ctrl+V操作，将内容瞬间黏贴到目标文本框"
+      name: operation
+      isAdvanced: 1
+    - name: input_method
+      label: ""
+      defaultValue: '1'
+      displayType: "checkbox"
+      displayParam: {
+        "text":"自动切换系统输入法"
+      }
+      wrapperType: "dependencyShow"
+      wrapperParam: {
+        "operation": [
+            "1"
+        ]
+      }
+      isAdvanced: 1
+      tip: Linux 不生效 输入前自动切换系统中英文输入法，避免第三防输入法导致的输入异常。
+    - defaultValue: '500'
+      label: "回车前延时（毫秒）"
+      name: delaybeforEnter
+      displayType: number
+      wrapperType: "dependencyShow"
+      wrapperParam: {
+        "isEnter": [
+            "1"
+        ]
+      }
+      tip: 勾选”输入完成回车”时，可以设置输入完成到触发回车的时间间隔，主要是为了避免未输入完成就触发了回车。
+      isAdvanced: 1
+      vType: ["rpa_int"]
+    - defaultValue: '0'
+      displayParam:
+      - label: "关闭"
+        value: '0'
+      - label: "开启"
+        value: '1'
+      displayType: radioGroup
+      label: "校验输入内容"
+      name: verifying_input
+      isAdvanced: 1
+      tip: "开启后，会在输入完成时验证最终输入结果是否正确，并返回验证结果"
+    return: 校验结果
+    returnLabel: "结果保存到"
+    wrapperType: "dependencyShow"
+    wrapperParam: {"verifying_input": ["1"]}
+    |
+|2026-01-29 13:55:58,158|  DEBUG|pid:2544967|tid:140270006922240|option_util.py: 338|None|None|engine|None|组件唯一标识为Element.SetValue_V4|
+|2026-01-29 13:55:58,161|  DEBUG|pid:2544967|tid:140270006922240|option_util.py: 412|None|None|engine|None|超时时间为5000|
+|2026-01-29 13:55:58,163|  DEBUG|pid:2544967|tid:140270006922240|option_util.py: 414|None|None|engine|None|跳过错误为1|
+|2026-01-29 13:55:58,166|   INFO|pid:2544967|tid:140270006922240|option_util.py: 423|None|None|engine|None|组件执行前总延迟0.2s|
+|2026-01-29 13:55:58,213|   INFO|pid:2544878|tid:140269889791744|ws_server.py:  85|XoawKr8I13|send|Z-Factory|log|{"requestId": "XoawKr8I13", "action": "log", "payload": {"text": "测试用例0001结束", "id": "VINCIuWxP0", "logType": "console", "taskNum": "2e27123c-fcd7-11f0-a520-000000000001"}}(sync)|
+|2026-01-29 13:55:58,213|   INFO|pid:2544878|tid:140269889791744|ws_server.py:  85|nEmiIhpS6d|send|Z-Factory|log|{"requestId": "nEmiIhpS6d", "action": "log", "payload": {"text": "测试用例0002开始", "id": "VINCIuWxP0", "logType": "console", "taskNum": "2e27123d-fcd7-11f0-a520-000000000001"}}(sync)|
+|2026-01-29 13:55:58,214|   INFO|pid:2544878|tid:140269889791744|ws_server.py:  85|7bqXH5Lu3y|send|Z-Factory|trace_log|{"requestId": "7bqXH5Lu3y", "action": "trace_log", "payload": {"componentsName": "输入文本", "componentSequence": "5", "command": "Element.SetValue_V4", "date": "2026-01-29 13:55:58", "taskId": "io5cd", "taskName": "流程块1", "componentId": "QAtpP", "componentRelationIds": [], "componentType": 0, "eventType": 0, "executeType": 1, "uuid": "2e27123e-fcd7-11f0-a520-e02be9b9c283", "level": -1, "is_in_loop": false, "loop_relations": [], "taskNum": "2e27123f-fcd7-11f0-a520-000000000001"}}(sync)|
+|2026-01-29 13:55:58,369|   INFO|pid:2544967|tid:140270006922240|option_util.py:  86|None|None|engine|None|[Element.SetValue_V4] entering|
+|2026-01-29 13:55:58,369|  DEBUG|pid:2544967|tid:140270006922240|option_util.py:  64|No module named 'packages.Element.py.validate_schema'|
+|2026-01-29 13:55:58,369|   INFO|pid:2544967|tid:140270006922240|option_util.py:  92|None|None|engine|None|组件重组间隔时间: 20ms|
+|2026-01-29 13:55:58,370|  DEBUG|pid:2544967|tid:140270006922240|retry_util.py:  30|None|None|engine|None|超时时间为5000|
+|2026-01-29 13:55:58,812|   INFO|pid:2544967|tid:140270006922240|browser_service.py: 387|None|None|engine|None|path is :/opt/apps/com.sz.rpa.studio/files/resources/app.asar.unpacked/resources/rpa-engine/rpa-engine-6.8.3/extentions|
+|2026-01-29 13:55:58,813|   INFO|pid:2544967|tid:140270006922240|browser_unix_socket.py:  72|None|None|engine|None|total len :75|
+|2026-01-29 13:55:58,814|   INFO|pid:2544967|tid:140270006922240|browser_service.py: 391|None|None|engine|None|getCodeId is AI-indeedRPA|
+|2026-01-29 13:55:58,814|   INFO|pid:2544967|tid:140270006922240|browser_service.py: 394|None|None|engine|None|js 已注入|
+|2026-01-29 13:55:58,814|   INFO|pid:2544967|tid:140270006922240|browser_service.py: 285|None|None|engine|None|query active tab|
+|2026-01-29 13:55:58,815|   INFO|pid:2544967|tid:140270006922240|browser_unix_socket.py:  72|None|None|engine|None|total len :73|
+|2026-01-29 13:55:58,816|   INFO|pid:2544967|tid:140270006922240|browser_service.py: 354|None|None|engine|None|判断缓存tab id|
+|2026-01-29 13:55:58,817|   INFO|pid:2544967|tid:140270006922240|browser_unix_socket.py:  72|None|None|engine|None|total len :487|
+|2026-01-29 13:55:58,818|   INFO|pid:2544967|tid:140270006922240|browser_unix_socket.py:  72|None|None|engine|None|total len :117|
+|2026-01-29 13:55:58,819|   INFO|pid:2544967|tid:140270006922240|browser_unix_socket.py:  72|None|None|engine|None|total len :486|
+|2026-01-29 13:55:58,820|   INFO|pid:2544967|tid:140270006922240|browser_unix_socket.py:  72|None|None|engine|None|total len :510|
+|2026-01-29 13:55:58,821|   INFO|pid:2544967|tid:140270006922240|browser_unix_socket.py:  72|None|None|engine|None|total len :554|
+|2026-01-29 13:55:58,822|   INFO|pid:2544967|tid:140270006922240|browser_unix_socket.py:  72|None|None|engine|None|total len :855|
+|2026-01-29 13:55:58,823|   INFO|pid:2544967|tid:140270006922240|browser_unix_socket.py:  72|None|None|engine|None|total len :487|
+|2026-01-29 13:55:58,823|  DEBUG|pid:2544967|tid:140270006922240|retry_util.py:  39|None|None|engine|None|运行次数为1   <class 'retrying.Attempt'>|
+|2026-01-29 13:55:58,824|  ERROR|pid:2544967|tid:140270006922240|option_util.py: 114|None|None|engine|None|[Element.SetValue_V4] raised error, but skipped|
+Traceback (most recent call last):
+  File "common/util/option_util.py", line 99, in decorated_method
+  File "common/util/retry_util.py", line 35, in call
+  File "retrying.py", line 266, in call
+  File "retrying.py", line 301, in get
+  File "six.py", line 724, in reraise
+  File "retrying.py", line 251, in call
+  File "common/util/retry_util.py", line 31, in wrapped_f
+  File "plugins/Element/v1.0.4.0/py/exports.py", line 669, in SetValue_V4
+  File "core/implements/ElementImp/element_service.py", line 30, in wrapper
+  File "core/implements/ElementImp/element_service.py", line 425, in SetValue_V4
+  File "core/service/element_service.py", line 258, in set_value
+  File "core/service/element_service.py", line 219, in query_node
+  File "chrome/service/browser_service.py", line 140, in query_node
+  File "chrome/service/browser_service.py", line 363, in query_tab_by_selector
+common.error.ComponentError.ComponentError: 未找到对应的标签页面
+|2026-01-29 13:55:58,824|   INFO|pid:2544967|tid:140270006922240|option_util.py: 432|None|None|engine|None|组件执行后总延迟0.05s|
+|2026-01-29 13:55:58,875|   INFO|pid:2544967|tid:140270006922240|log_service.py:  25|None|None|engine|None|Log.Info : 测试用例0002结束|
+|2026-01-29 13:55:58,880|   INFO|pid:2544967|tid:140270006922240|message_run.py: 199|None|None|engine|None|------------ rpa.main() end -----------|
+|2026-01-29 13:55:58,885|   INFO|pid:2544967|tid:140270006922240|message_run.py: 757|None|None|engine|None|start compress sandbox|
+|2026-01-29 13:55:58,904|   INFO|pid:2544967|tid:140270006922240|message_run.py: 760|None|None|engine|None|finish compress sandbox|
+|2026-01-29 13:55:58,920|   INFO|pid:2544878|tid:140269889791744|ws_server.py:  85|7LC1urvqp3|send|Z-Factory|trace_log|{"requestId": "7LC1urvqp3", "action": "trace_log", "payload": {"componentsName": "输入文本", "componentSequence": "5", "command": "Element.SetValue_V4", "date": "2026-01-29 13:55:58", "taskId": "io5cd", "taskName": "流程块1", "componentId": "QAtpP", "componentRelationIds": [], "componentType": 0, "eventType": 2, "reasonDescription": "运行错误：True", "reasonCode": "", "useTime": 0, "executeType": 1, "uuid": "2e27123e-fcd7-11f0-a520-e02be9b9c283", "level": 1, "is_in_loop": false, "loop_relations": [], "is_in_custom_code": false, "err_line": "", "taskNum": "2e271240-fcd7-11f0-a520-000000000001"}}(sync)|
+|2026-01-29 13:55:58,920|   INFO|pid:2544878|tid:140269889791744|ws_server.py:  85|IOUa7Lsz2y|send|Z-Factory|log|{"requestId": "IOUa7Lsz2y", "action": "log", "payload": {"text": "测试用例0002结束", "id": "VINCIuWxP0", "logType": "console", "taskNum": "2e271241-fcd7-11f0-a520-000000000001"}}(sync)|
+|2026-01-29 13:55:58,921|   INFO|pid:2544878|tid:140269889791744|ws_server.py:  85|nP48fDkxjf|send|Z-Factory|log|{"requestId": "nP48fDkxjf", "action": "log", "payload": {"id": "VINCIuWxP0", "text": "运行结束", "taskNum": "2e271242-fcd7-11f0-a520-000000000001"}}(sync)|
+|2026-01-29 13:55:58,921|   INFO|pid:2544878|tid:140269889791744|ws_server.py:  85|nP48fDkxjf|send|Z-Factory|run|{"requestId": "nP48fDkxjf", "action": "run", "payload": {"id": "VINCIuWxP0", "status": "success", "video": ""}}(sync)|
+|2026-01-29 13:56:02,118|   INFO|pid:2544878|tid:140270006922240|base.py:  73|None|None|engine|None|----————————————————————{"requestId":"7KwCi1HTxX","payload":{},"action":"close"}|
+|2026-01-29 13:56:02,118|  DEBUG|pid:2544878|tid:140270006922240|base.py:  88|7KwCi1HTxX|recv|Z-Factory|close|{"requestId":"7KwCi1HTxX","payload":{},"action":"close"}|
+|2026-01-29 13:56:02,118|   INFO|pid:2544878|tid:140270006922240|message.py:  55|None|None|engine|None|pool....................False|
+|2026-01-29 13:56:02,118|   INFO|pid:2544878|tid:140270006922240|message.py:  56|None|None|engine|None|receive action "close"|
+|2026-01-29 13:56:02,119|   INFO|pid:2544878|tid:140270006922240|message.py:  97|None|None|engine|None|run in main process|
+|2026-01-29 13:56:02,119|   INFO|pid:2544878|tid:140270006922240|action_dispatch.py:  40|None|None|engine|None|执行close|
+|2026-01-29 13:56:02,120|   INFO|pid:2544878|tid:140270006922240|closeEngine.py:  13|None|None|engine|None|开始关闭engine|
+|2026-01-29 13:56:02,153|   INFO|pid:2544878|tid:140269889791744|ws_server.py:  85|7KwCi1HTxX|send|Z-Factory|close|{"requestId": "7KwCi1HTxX", "action": "close", "payload": {"status": "recv"}}(sync)|
+|2026-01-29 13:56:02,335|   INFO|pid:2544878|tid:140270006922240|system.py:  97|None|None|engine|None|开始关闭执行流程|
+|2026-01-29 13:56:02,366|   INFO|pid:2544878|tid:140270006922240|system.py: 126|None|None|engine|None|退出mm进程|
+|2026-01-29 13:56:02,402|  ERROR|pid:2544878|tid:140269889791744|ws_server.py: 101|None|None|engine|None|send msg error|
+Traceback (most recent call last):
+  File "core/ws/ws_server.py", line 46, in send_queued_msg
+  File "<string>", line 2, in get
+  File "multiprocessing/managers.py", line 796, in _callmethod
+  File "multiprocessing/connection.py", line 250, in recv
+  File "multiprocessing/connection.py", line 407, in _recv_bytes
+  File "multiprocessing/connection.py", line 383, in _recv
+EOFError
+|2026-01-29 13:56:02,413|  ERROR|pid:2544878|tid:140269889791744|ws_server.py:  97|None|None|engine|None|管道破裂, 等待5秒重试|
+Traceback (most recent call last):
+  File "core/ws/ws_server.py", line 46, in send_queued_msg
+  File "<string>", line 2, in get
+  File "multiprocessing/managers.py", line 795, in _callmethod
+  File "multiprocessing/connection.py", line 206, in send
+  File "multiprocessing/connection.py", line 404, in _send_bytes
+  File "multiprocessing/connection.py", line 368, in _send
+BrokenPipeError: [Errno 32] Broken pipe
+|2026-01-29 13:56:02,435|   INFO|pid:2544878|tid:140270006922240|system.py: 134|None|None|engine|None|关闭进程：psutil.Process(pid=2544957, name='rpa-engine', status='zombie', started='13:55:33')|
+|2026-01-29 13:56:02,436|   INFO|pid:2544878|tid:140270006922240|system.py: 134|None|None|engine|None|关闭进程：psutil.Process(pid=2544967, name='rpa-engine', status='running', started='13:55:33')|
+|2026-01-29 13:56:02,436|   INFO|pid:2544878|tid:140270006922240|system.py: 136|None|None|engine|None|开始关闭进程池|
+|2026-01-29 13:56:02,436|   INFO|pid:2544878|tid:140270006922240|system.py: 138|None|None|engine|None|已关闭任务进程池|
+|2026-01-29 13:56:02,436|   INFO|pid:2544878|tid:140270006922240|system.py: 139|None|None|engine|None|engine关闭完成|
