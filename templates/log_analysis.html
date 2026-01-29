@@ -233,17 +233,18 @@
             font-size: 15px;
             line-height: 1;
             overflow-y: auto;
-            white-space: pre-wrap;
+            white-space: pre;
             max-height: 75vh;
         }
 
         .log-line {
-            padding: 2px 6px;
-            margin: 0.1em 0;
+            padding: 0;
+            margin: 0;
             border-left: 3px solid transparent;
             white-space: pre-wrap;
             word-break: break-word;
             display: flex;
+            align-items: flex-start;
         }
 
         .log-line.error {
@@ -256,7 +257,7 @@
             margin-right: 10px;
             user-select: none;
             flex-shrink: 0;
-            width: 20px;
+            width: 80px;
             text-align: right;
             font-size: 13px;
         }
@@ -264,6 +265,9 @@
         .log-line .log-content {
             flex: 1;
             word-break: break-word;
+            margin: 0;
+            padding: 0;
+            line-height: 1;
         }
 
         .error-summary {
