@@ -149,62 +149,6 @@ def analysis():
 def get_engine_log():
     return send_from_directory(app.config['STATIC_FOLDER'], 'engine.log')
 
-@app.route('/upload', methods=['POST'])
-def upload_file():
-    if 'file' not in request.files:
-        return jsonify({'error': 'No file uploaded'}), 400
-
-    file = request.files['file']
-    if file.filename is None or file.filename == '':
-        return jsonify({'error': 'No file selected'}), 400
-
-    if not file.filename.endswith('.log'):
-        return jsonify({'error': 'File must be .log format'}), 400
-
-    try:
-        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-        filename = f'engine_logs_{timestamp}.log'
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        file.save(filepath)
-
-        with open(filepath, 'r', encoding='utf-8') as f:
-            log_content = f.read()
-
-        analyzer = LogAnalyzer(log_content)
-        test_cases = analyzer.analyze()
-
-        return jsonify({
-            'success': True,
-            'test_cases': test_cases,
-            'total': len(test_cases),
-            'errors': sum(1 for tc in test_cases if tc['has_error']),
-            'file_path': filepath
-        })
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/log/context/<int:line_idx>/<int:start>/<int:end>')
-def get_log_context(line_idx, start, end):
-    try:
-        log_file = request.args.get('file_path')
-        if not log_file:
-            return jsonify({'error': 'No file path provided'}), 400
-
-        with open(log_file, 'r', encoding='utf-8') as f:
-            lines = f.readlines()
-
-        context_lines = []
-        for i in range(start, min(end + 1, len(lines))):
-            context_lines.append({
-                'line_num': i,
-                'content': lines[i].strip(),
-                'is_error': i == line_idx
-            })
-
-        return jsonify({'lines': context_lines})
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
 @app.route('/analyze/default')
 def analyze_default_log():
     try:
@@ -219,6 +163,45 @@ def analyze_default_log():
             'test_cases': test_cases,
             'total': len(test_cases),
             'errors': sum(1 for tc in test_cases if tc['has_error'])
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/log/context/<int:error_line>/<int:page>')
+def get_log_context(error_line, page):
+    try:
+        lines_per_page = 50
+        with open('/workspace/static/engine.log', 'r', encoding='utf-8') as f:
+            all_lines = f.readlines()
+
+        total_lines = len(all_lines)
+        context_size = 250  # 错误行前后各250行，总共500行
+
+        start = max(0, error_line - context_size)
+        end = min(total_lines, error_line + context_size + 1)
+
+        total_pages = (end - start + lines_per_page - 1) // lines_per_page
+        current_page = max(0, min(page, total_pages - 1))
+
+        page_start = start + current_page * lines_per_page
+        page_end = min(page_start + lines_per_page, end)
+
+        context_lines = []
+        for i in range(page_start, page_end):
+            context_lines.append({
+                'line_num': i,
+                'content': all_lines[i].strip(),
+                'is_error': i == error_line
+            })
+
+        return jsonify({
+            'lines': context_lines,
+            'current_page': current_page,
+            'total_pages': total_pages,
+            'error_line': error_line,
+            'total_lines': total_lines,
+            'context_start': start,
+            'context_end': end
         })
     except Exception as e:
         return jsonify({'error': str(e)}), 500

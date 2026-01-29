@@ -234,6 +234,43 @@
             line-height: 1.6;
             overflow-x: auto;
             white-space: pre-wrap;
+            max-height: 600px;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9ff;
+            border-radius: 8px;
+        }
+
+        .pagination-btn {
+            padding: 8px 16px;
+            border: 1px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .pagination-btn:hover:not(:disabled) {
+            background: #667eea;
+            color: white;
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .page-info {
+            color: #666;
+            font-size: 14px;
         }
     </style>
 </head>
@@ -293,6 +330,11 @@
             </div>
             <div class="modal-body">
                 <div class="error-detail" id="errorDetail"></div>
+                <div class="pagination" id="pagination" style="display: none;">
+                    <button class="pagination-btn" id="prevPage">上一页</button>
+                    <span class="page-info" id="pageInfo">第 1 页 / 共 1 页</span>
+                    <button class="pagination-btn" id="nextPage">下一页</button>
+                </div>
             </div>
         </div>
     </div>
@@ -301,6 +343,14 @@
         const errorModal = document.getElementById('errorModal');
         const closeModal = document.getElementById('closeModal');
         const errorDetail = document.getElementById('errorDetail');
+        const pagination = document.getElementById('pagination');
+        const prevPageBtn = document.getElementById('prevPage');
+        const nextPageBtn = document.getElementById('nextPage');
+        const pageInfo = document.getElementById('pageInfo');
+
+        let currentErrorLine = -1;
+        let currentPage = 0;
+        let totalPages = 0;
 
         async function loadLogAndAnalyze() {
             try {
@@ -356,7 +406,7 @@
                 errorsHtml += `
                     <div style="margin-bottom: 8px;">
                         <div style="color: #e74c3c; font-weight: 500; font-size: 11px; margin-bottom: 4px;">${errorMessage}</div>
-                        <a class="error-link" onclick="showErrorDetail('${escapeHtml(error.message)}')">查看详细错误</a>
+                        <a class="error-link" onclick="showErrorDetail(${error.line})">查看详细错误</a>
                     </div>
                 `;
             });
@@ -373,10 +423,66 @@
                 .replace(/"/g, '&quot;');
         }
 
-        function showErrorDetail(errorMessage) {
-            errorDetail.textContent = errorMessage;
-            errorModal.classList.add('active');
+        async function showErrorDetail(errorLine) {
+            currentErrorLine = errorLine;
+            currentPage = 0;
+            await loadLogContext(errorLine, currentPage);
         }
+
+        async function loadLogContext(errorLine, page) {
+            try {
+                const response = await fetch(`/log/context/${errorLine}/${page}`);
+                const data = await response.json();
+
+                if (data.error) {
+                    errorDetail.innerHTML = `<div style="color: #e74c3c;">加载失败: ${data.error}</div>`;
+                    return;
+                }
+
+                totalPages = data.total_pages;
+                currentPage = data.current_page;
+
+                let contextHtml = '';
+                data.lines.forEach(line => {
+                    const lineContent = escapeHtml(line.content);
+                    contextHtml += `
+                        <div class="log-line ${line.is_error ? 'error' : ''}">
+                            <span class="line-num">${line.line_num + 1}</span>${lineContent}
+                        </div>
+                    `;
+                });
+
+                errorDetail.innerHTML = contextHtml;
+
+                // 更新分页信息
+                if (totalPages > 1) {
+                    pagination.style.display = 'flex';
+                    pageInfo.textContent = `第 ${currentPage + 1} 页 / 共 ${totalPages} 页 (显示行 ${data.context_start + 1} - ${data.context_end})`;
+                    prevPageBtn.disabled = currentPage === 0;
+                    nextPageBtn.disabled = currentPage >= totalPages - 1;
+                } else {
+                    pagination.style.display = 'none';
+                }
+
+                errorModal.classList.add('active');
+            } catch (error) {
+                errorDetail.innerHTML = `<div style="color: #e74c3c;">加载失败: ${error.message}</div>`;
+            }
+        }
+
+        prevPageBtn.addEventListener('click', () => {
+            if (currentPage > 0) {
+                currentPage--;
+                loadLogContext(currentErrorLine, currentPage);
+            }
+        });
+
+        nextPageBtn.addEventListener('click', () => {
+            if (currentPage < totalPages - 1) {
+                currentPage++;
+                loadLogContext(currentErrorLine, currentPage);
+            }
+        });
 
         closeModal.addEventListener('click', () => {
             errorModal.classList.remove('active');
