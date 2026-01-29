@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, send_from_directory
 import os
 import re
 from datetime import datetime
@@ -6,8 +6,10 @@ from datetime import datetime
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
+app.config['STATIC_FOLDER'] = 'static'
 
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+os.makedirs(app.config['STATIC_FOLDER'], exist_ok=True)
 
 class LogAnalyzer:
     def __init__(self, log_content):
@@ -21,25 +23,21 @@ class LogAnalyzer:
         in_test_case = False
 
         for idx, line in enumerate(self.log_lines):
-            match_start = re.search(r'测试用例(\d+)\s*开始', line)
-            match_end = re.search(r'测试用例(\d+)\s*结束', line)
+            match_start = re.search(r'log_service\.py.*?Log\.Info\s*:\s*测试用例(\d+)\s*开始', line)
+            match_end = re.search(r'log_service\.py.*?Log\.Info\s*:\s*测试用例(\d+)\s*结束', line)
 
             if match_start:
                 test_case_id = match_start.group(1)
 
                 if in_test_case and current_test_case:
-                    current_test_case['end_line'] = idx - 1
                     self._process_test_case(current_test_case, current_lines)
 
                 current_test_case = {
                     'test_case_id': test_case_id,
-                    'components': [],
+                    'component_info': {},
                     'has_error': False,
                     'errors': [],
-                    'start_line': idx,
-                    'start_time': self._extract_timestamp(line),
-                    'end_line': None,
-                    'end_time': None
+                    'start_line': idx
                 }
                 current_lines = [(idx, line)]
                 in_test_case = True
@@ -48,8 +46,6 @@ class LogAnalyzer:
                 end_test_case_id = match_end.group(1)
                 if end_test_case_id == current_test_case['test_case_id']:
                     current_lines.append((idx, line))
-                    current_test_case['end_line'] = idx
-                    current_test_case['end_time'] = self._extract_timestamp(line)
                     self._process_test_case(current_test_case, current_lines)
                     current_test_case = None
                     in_test_case = False
@@ -58,7 +54,6 @@ class LogAnalyzer:
                 current_lines.append((idx, line))
 
         if in_test_case and current_test_case:
-            current_test_case['end_line'] = len(self.log_lines) - 1
             self._process_test_case(current_test_case, current_lines)
 
         return self.test_cases
@@ -68,26 +63,42 @@ class LogAnalyzer:
         return match.group(1) if match else ''
 
     def _process_test_case(self, test_case, lines):
-        components = []
+        component_info = {
+            'module': '',
+            'name_cn': '',
+            'category': '',
+            'method': '',
+            'plugin_name': '',
+            'unique_id': ''
+        }
 
         for line_idx, line in lines:
-            if 'Exception' in line or 'Error' in line:
-                error_match = re.search(r'(Exception|Error)[:\s]*(.*)', line)
+            if 'ERROR' in line:
+                error_match = re.search(r'ERROR.*?[:\s]*(.*)', line)
                 if error_match:
-                    error_message = error_match.group(2).strip() if error_match.group(2) else line.strip()
+                    error_message = error_match.group(1).strip() if error_match.group(1) else line.strip()
                     test_case['has_error'] = True
                     test_case['errors'].append({
                         'line': line_idx,
-                        'message': error_message,
-                        'context': self._get_context(line_idx)
+                        'message': error_message
                     })
 
-            component_info = self._extract_component_info(line)
-            if component_info:
-                components.append(component_info)
+            for key, pattern in {
+                'module': r'组件模块为([^|]+)',
+                'name_cn': r'组件中文名为([^|]+)',
+                'category': r'组件分类为([^|]+)',
+                'method': r'组件方法名为([^|]+)',
+                'plugin_name': r'组件插件包中文名为([^|]+)',
+                'unique_id': r'组件唯一标识为([^|]+)'
+            }.items():
+                if not component_info.get(key):
+                    match = re.search(pattern, line)
+                    if match and match.group(1):
+                        value = match.group(1).strip()
+                        if value and value != '为':
+                            component_info[key] = value
 
-        test_case['components'] = components
-        test_case['end_line'] = lines[-1][0] if lines else test_case['start_line']
+        test_case['component_info'] = component_info
         self.test_cases.append(test_case)
 
     def _extract_component_info(self, line):
@@ -129,6 +140,14 @@ class LogAnalyzer:
 @app.route('/')
 def index():
     return render_template('index.html')
+
+@app.route('/analysis')
+def analysis():
+    return render_template('log_analysis.html')
+
+@app.route('/engine.log')
+def get_engine_log():
+    return send_from_directory(app.config['STATIC_FOLDER'], 'engine.log')
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
@@ -183,6 +202,24 @@ def get_log_context(line_idx, start, end):
             })
 
         return jsonify({'lines': context_lines})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/analyze/default')
+def analyze_default_log():
+    try:
+        with open('/workspace/static/engine.log', 'r', encoding='utf-8') as f:
+            log_content = f.read()
+
+        analyzer = LogAnalyzer(log_content)
+        test_cases = analyzer.analyze()
+
+        return jsonify({
+            'success': True,
+            'test_cases': test_cases,
+            'total': len(test_cases),
+            'errors': sum(1 for tc in test_cases if tc['has_error'])
+        })
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
