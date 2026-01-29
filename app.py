@@ -140,7 +140,7 @@ class LogAnalyzer:
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return '<script>window.location.href="/analysis"</script>'
 
 @app.route('/analysis')
 def analysis():
