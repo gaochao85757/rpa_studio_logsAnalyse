@@ -11,7 +11,7 @@ if ! command -v python3 &> /dev/null; then
 fi
 
 echo "正在安装依赖..."
-pip3 install -r requirements.txt
+pip3 install --break-system-packages -r requirements.txt
 
 echo ""
 echo "正在启动应用..."
