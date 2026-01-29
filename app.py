@@ -174,7 +174,7 @@ def get_log_context(error_line):
             all_lines = f.readlines()
 
         total_lines = len(all_lines)
-        context_size = 250  # 错误行前后各250行，总共500行
+        context_size = 500  # 错误行前后各500行，总共1000行
 
         start = max(0, error_line - context_size)
         end = min(total_lines, error_line + context_size + 1)
