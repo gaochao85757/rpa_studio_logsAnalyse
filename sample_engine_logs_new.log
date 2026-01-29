@@ -1,0 +1,40 @@
+|2026-01-29 13:55:57,229|   INFO|pid:2544967|tid:140270006922240|log_service.py:  25|None|None|engine|None|Log.Info : 测试用例0001开始|
+|2026-01-29 13:55:57,230|  DEBUG|pid:2544967|tid:140270006922240|option_util.py: 326|None|None|engine|None|组件模块为Element|
+|2026-01-29 13:55:57,231|  DEBUG|pid:2544967|tid:140270006922240|option_util.py: 328|None|None|engine|None|组件中文名为点击界面元素|
+|2026-01-29 13:55:57,231|  DEBUG|pid:2544967|tid:140270006922240|option_util.py: 330|None|None|engine|None|组件分类为["interface_element","webBrowser"]|
+|2026-01-29 13:55:57,231|  DEBUG|pid:2544967|tid:140270006922240|option_util.py: 332|None|None|engine|None|组件方法名为Click_V3|
+|2026-01-29 13:55:57,231|  DEBUG|pid:2544967|tid:140270006922240|option_util.py: 334|None|None|engine|None|组件插件包中文名为["interface_element","webBrowser"]|
+|2026-01-29 13:55:57,232|  DEBUG|pid:2544967|tid:140270006922240|option_util.py: 338|None|None|engine|None|组件唯一标识为Element.Click_V3|
+|2026-01-29 13:55:57,299|   INFO|pid:2544878|tid:140269889791744|ws_server.py:  85|nP48fDkxjf|send|Z-Factory|log|{"requestId": "nP48fDkxjf", "action": "log", "payload": {"id": "VINCIuWxP0", "text": "开始运行", "taskNum": "2e271237-fcd7-11f0-a520-000000000001"}}(sync)|
+|2026-01-29 13:55:57,300|   INFO|pid:2544878|tid:140269889791744|ws_server.py:  85|VH5qOA2YIn|send|Z-Factory|log|{"requestId": "VH5qOA2YIn", "action": "log", "payload": {"text": "测试用例0001开始", "id": "VINCIuWxP0", "logType": "console", "taskNum": "2e271238-fcd7-11f0-a520-000000000001"}}(sync)|
+|2026-01-29 13:55:58,136|   INFO|pid:2544967|tid:140270006922240|log_service.py:  25|None|None|engine|None|Log.Info : 测试用例0001结束|
+|2026-01-29 13:55:58,140|   INFO|pid:2544967|tid:140270006922240|log_service.py:  25|None|None|engine|None|Log.Info : 测试用例0002开始|
+|2026-01-29 13:55:58,141|  DEBUG|pid:2544967|tid:140270006922240|option_util.py: 326|None|None|engine|None|组件模块为Element|
+|2026-01-29 13:55:58,142|  DEBUG|pid:2544967|tid:140270006922240|option_util.py: 328|None|None|engine|None|组件中文名为点击界面元素|
+|2026-01-29 13:55:58,143|  DEBUG|pid:2544967|tid:140270006922240|option_util.py: 330|None|None|engine|None|组件分类为["interface_element","webBrowser"]|
+|2026-01-29 13:55:58,144|  DEBUG|pid:2544967|tid:140270006922240|option_util.py: 332|None|None|engine|None|组件方法名为Click_V3|
+|2026-01-29 13:55:58,145|  DEBUG|pid:2544967|tid:140270006922240|option_util.py: 334|None|None|engine|None|组件插件包中文名为["interface_element","webBrowser"]|
+|2026-01-29 13:55:58,146|  DEBUG|pid:2544967|tid:140270006922240|option_util.py: 338|None|None|engine|None|组件唯一标识为Element.Click_V3|
+|2026-01-29 13:55:58,200|  ERROR|pid:2544967|tid:140270006922240|element_service.py: 350|None|None|engine|None|Exception: TimeoutException at Element.Click_V3 - 等待元素超时: 无法在指定时间内找到目标元素|
+|2026-01-29 13:55:58,201|  DEBUG|pid:2544967|tid:140270006922240|option_util.py: 326|None|None|engine|None|组件模块为Data|
+|2026-01-29 13:55:58,202|  DEBUG|pid:2544967|tid:140270006922240|option_util.py: 328|None|None|engine|None|组件中文名为读取Excel|
+|2026-01-29 13:55:58,203|  DEBUG|pid:2544967|tid:140270006922240|option_util.py: 330|None|None|engine|None|组件分类为["data","excel"]|
+|2026-01-29 13:55:58,204|  DEBUG|pid:2544967|tid:140270006922240|option_util.py: 332|None|None|engine|None|组件方法名为ReadExcel|
+|2026-01-29 13:55:58,205|  DEBUG|pid:2544967|tid:140270006922240|option_util.py: 334|None|None|engine|None|组件插件包中文名为["data","excel"]|
+|2026-01-29 13:55:58,206|  DEBUG|pid:2544967|tid:140270006922240|option_util.py: 338|None|None|engine|None|组件唯一标识为Data.ReadExcel|
+|2026-01-29 13:55:58,210|  ERROR|pid:2544967|tid:140270006922240|data_service.py: 420|None|None|engine|None|Error: FileNotFoundException at Data.ReadExcel - 文件不存在: /home/user/data.xlsx|
+|2026-01-29 13:55:58,250|   INFO|pid:2544967|tid:140270006922240|log_service.py:  25|None|None|engine|None|Log.Info : 测试用例0002结束|
+|2026-01-29 13:55:58,255|   INFO|pid:2544967|tid:140270006922240|log_service.py:  25|None|None|engine|None|Log.Info : 测试用例0003开始|
+|2026-01-29 13:55:58,256|  DEBUG|pid:2544967|tid:140270006922240|option_util.py: 326|None|None|engine|None|组件模块为Core|
+|2026-01-29 13:55:58,257|  DEBUG|pid:2544967|tid:140270006922240|option_util.py: 328|None|None|engine|None|组件中文名为初始化|
+|2026-01-29 13:55:58,258|  DEBUG|pid:2544967|tid:140270006922240|option_util.py: 330|None|None|engine|None|组件分类为["basic"]|
+|2026-01-29 13:55:58,259|  DEBUG|pid:2544967|tid:140270006922240|option_util.py: 332|None|None|engine|None|组件方法名为Initialize|
+|2026-01-29 13:55:58,260|  DEBUG|pid:2544967|tid:140270006922240|option_util.py: 334|None|None|engine|None|组件插件包中文名为["basic"]|
+|2026-01-29 13:55:58,261|  DEBUG|pid:2544967|tid:140270006922240|option_util.py: 338|None|None|engine|None|组件唯一标识为Core.Initialize|
+|2026-01-29 13:55:58,262|  DEBUG|pid:2544967|tid:140270006922240|option_util.py: 326|None|None|engine|None|组件模块为UI|
+|2026-01-29 13:55:58,263|  DEBUG|pid:2544967|tid:140270006922240|option_util.py: 328|None|None|engine|None|组件中文名为输入文本|
+|2026-01-29 13:55:58,264|  DEBUG|pid:2544967|tid:140270006922240|option_util.py: 330|None|None|engine|None|组件分类为["ui","automation"]|
+|2026-01-29 13:55:58,265|  DEBUG|pid:2544967|tid:140270006922240|option_util.py: 332|None|None|engine|None|组件方法名为InputText|
+|2026-01-29 13:55:58,266|  DEBUG|pid:2544967|tid:140270006922240|option_util.py: 334|None|None|engine|None|组件插件包中文名为["ui","automation"]|
+|2026-01-29 13:55:58,267|  DEBUG|pid:2544967|tid:140270006922240|option_util.py: 338|None|None|engine|None|组件唯一标识为UI.InputText|
+|2026-01-29 13:55:58,300|   INFO|pid:2544967|tid:140270006922240|log_service.py:  25|None|None|engine|None|Log.Info : 测试用例0003结束|

@@ -68,7 +68,7 @@ class LogAnalyzer:
         return match.group(1) if match else ''
 
     def _process_test_case(self, test_case, lines):
-        current_component = None
+        components = []
 
         for line_idx, line in lines:
             if 'Exception' in line or 'Error' in line:
@@ -84,34 +84,29 @@ class LogAnalyzer:
 
             component_info = self._extract_component_info(line)
             if component_info:
-                if current_component:
-                    test_case['components'].append(current_component)
-                current_component = component_info
-            elif current_component:
-                test_case['components'].append(current_component)
-                current_component = None
+                components.append(component_info)
 
-        if current_component:
-            test_case['components'].append(current_component)
-
+        test_case['components'] = components
         test_case['end_line'] = lines[-1][0] if lines else test_case['start_line']
         self.test_cases.append(test_case)
 
     def _extract_component_info(self, line):
         patterns = {
-            'module': r'组件模块[：:]\s*(\S+)',
-            'name_cn': r'组件中文名[：:]\s*(\S+)',
-            'category': r'组件分类[：:]\s*(\S+)',
-            'method': r'组件方法名[：:]\s*(\S+)',
-            'plugin_name': r'组件插件包中文名[：:]\s*(\S+)',
-            'unique_id': r'组件唯一标识[：:]\s*(\S+)'
+            'module': r'组件模块[为]?[：:]\s*(\S+)',
+            'name_cn': r'组件中文名[为]?[：:]\s*(.+?)(?:\s+组件|$)',
+            'category': r'组件分类[为]?[：:]\s*(\[[^\]]+\]|[^\s,]+)',
+            'method': r'组件方法名[为]?[：:]\s*(\S+)',
+            'plugin_name': r'组件插件包中文名[为]?[：:]\s*(\[[^\]]+\]|[^\s,]+)',
+            'unique_id': r'组件唯一标识[为]?[：:]\s*(\S+)'
         }
 
         component = {}
         for key, pattern in patterns.items():
             match = re.search(pattern, line)
             if match:
-                component[key] = match.group(1)
+                value = match.group(1)
+                if value and value != '为':
+                    component[key] = value
 
         if component:
             return component
