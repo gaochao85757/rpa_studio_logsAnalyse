@@ -74,9 +74,10 @@ class LogAnalyzer:
 
         for line_idx, line in lines:
             if 'ERROR' in line:
-                error_match = re.search(r'ERROR.*?[:\s]*(.*)', line)
+                # 从ERROR或Exception开始提取错误信息
+                error_match = re.search(r'(ERROR|Exception|Error)(.*)', line)
                 if error_match:
-                    error_message = error_match.group(1).strip() if error_match.group(1) else line.strip()
+                    error_message = (error_match.group(1) + error_match.group(2)).strip()
                     test_case['has_error'] = True
                     test_case['errors'].append({
                         'line': line_idx,
