@@ -1,0 +1,27 @@
+# Engine Logs 分析工具配置文件示例
+# 请复制此文件为 config.yaml 并填写实际配置信息
+
+# 邮件服务器配置
+mail:
+  # SMTP 服务器地址（例如：smtp.gmail.com, smtp.qq.com, smtp.163.com 等）
+  server: smtp.gmail.com
+  # SMTP 端口（SSL: 465, TLS: 587）
+  port: 587
+  # 是否使用 TLS
+  use_tls: true
+  # 发件人邮箱
+  from_email: your-email@example.com
+  # 邮箱密码或授权码（建议使用应用专用密码）
+  password: your-password-or-app-specific-password
+
+# 收件人列表（支持多个）
+recipients:
+  - recipient1@example.com
+  - recipient2@example.com
+
+# 报告配置
+report:
+  # 报告标题
+  title: Engine Logs 分析报告
+  # 公司名称或组织名称
+  company: 您的公司名称
