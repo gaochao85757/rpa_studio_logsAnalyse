@@ -1,8 +1,0 @@
-# Python 3.7 兼容版本
-Flask==1.1.4
-Werkzeug==1.0.1
-python-docx==0.8.11
-PyYAML==6.0.1
-MarkupSafe==1.1.1
-Jinja2==2.11.3
-lxml>=3.1.0

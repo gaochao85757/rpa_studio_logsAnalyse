@@ -42,10 +42,7 @@
 pip install -r requirements.txt
 ```
 
-**Python 3.7 用户**：如果遇到依赖问题，请使用：
-```bash
-pip install -r requirements-py37.txt
-```
+requirements.txt 已自动适配不同 Python 版本（3.7 使用 python-docx 0.8.11，3.8+ 使用 python-docx 1.2.0）。
 
 ### 2. 配置邮件服务（可选）
 

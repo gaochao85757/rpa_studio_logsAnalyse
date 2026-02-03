@@ -1,4 +1,13 @@
 Flask==1.1.4
 Werkzeug==1.0.1
-python-docx==1.1.2
+
+# Python < 3.8 版本
+python-docx==0.8.11; python_version < '3.8'
+MarkupSafe==1.1.1; python_version < '3.8'
+Jinja2==2.11.3; python_version < '3.8'
+
+# Python >= 3.8 版本
+python-docx==1.2.0; python_version >= '3.8'
+
 PyYAML==6.0.1
+lxml>=3.1.0
