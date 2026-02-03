@@ -101,9 +101,22 @@ python3 app.py
 - python-docx==1.1.2
 - PyYAML==6.0.1
 
-## 注意事项
+## 常见问题
 
-1. `config.yaml` 包含敏感信息，已被加入 `.gitignore`，不会被提交到 Git
-2. 请妥善保管您的邮箱密码和授权码
-3. 建议在虚拟环境中运行，避免污染系统 Python 环境
-4. 如果使用 Gmail，必须启用"两步验证"并生成应用专用密码
+### ImportError: cannot import name 'soft_unicode' from 'markupsafe'
+
+这是 MarkupSafe 和 Jinja2 版本不兼容导致的。解决方法：
+
+```bash
+# 卸载不兼容的版本
+pip uninstall MarkupSafe Jinja2
+
+# 安装兼容版本
+pip install MarkupSafe==1.1.1 Jinja2==2.11.3
+```
+
+或者使用 Python 3.7 专用依赖文件：
+
+```bash
+pip install -r requirements-py37.txt
+```
