@@ -7,6 +7,7 @@ app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 app.config['STATIC_FOLDER'] = 'static'
+app.config['LOG_FILE_PATH'] = 'static/engine.log'
 
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 os.makedirs(app.config['STATIC_FOLDER'], exist_ok=True)
@@ -153,7 +154,7 @@ def get_engine_log():
 @app.route('/analyze/default')
 def analyze_default_log():
     try:
-        with open('/workspace/static/engine.log', 'r', encoding='utf-8') as f:
+        with open(app.config['LOG_FILE_PATH'], 'r', encoding='utf-8') as f:
             log_content = f.read()
 
         analyzer = LogAnalyzer(log_content)
@@ -171,7 +172,7 @@ def analyze_default_log():
 @app.route('/log/context/<int:error_line>')
 def get_log_context(error_line):
     try:
-        with open('/workspace/static/engine.log', 'r', encoding='utf-8') as f:
+        with open(app.config['LOG_FILE_PATH'], 'r', encoding='utf-8') as f:
             all_lines = f.readlines()
 
         total_lines = len(all_lines)
