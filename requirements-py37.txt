@@ -1,0 +1,5 @@
+# Python 3.7 兼容版本
+Flask==1.1.4
+Werkzeug==1.0.1
+python-docx==1.1.2
+PyYAML==6.0.1
