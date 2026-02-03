@@ -1,16 +1,61 @@
-from flask import Flask, render_template, request, jsonify, send_from_directory
+from flask import Flask, render_template, request, jsonify, send_from_directory, send_file
 import os
 import re
+import yaml
 from datetime import datetime
+from docx import Document
+from docx.shared import Inches, Pt, RGBColor
+from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.mime.application import MIMEApplication
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 app.config['STATIC_FOLDER'] = 'static'
 app.config['LOG_FILE_PATH'] = 'static/engine.log'
+app.config['OUTPUT_FOLDER'] = 'outputs'
+app.config['CONFIG_FILE'] = 'config.yaml'
 
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 os.makedirs(app.config['STATIC_FOLDER'], exist_ok=True)
+os.makedirs(app.config['OUTPUT_FOLDER'], exist_ok=True)
+
+def load_config():
+    config = {
+        'mail': {
+            'server': 'smtp.gmail.com',
+            'port': 587,
+            'use_tls': True,
+            'from_email': '',
+            'password': ''
+        },
+        'recipients': [],
+        'report': {
+            'title': 'Engine Logs 分析报告',
+            'company': '您的公司名称'
+        }
+    }
+
+    if os.path.exists(app.config['CONFIG_FILE']):
+        try:
+            with open(app.config['CONFIG_FILE'], 'r', encoding='utf-8') as f:
+                yaml_config = yaml.safe_load(f)
+                if yaml_config:
+                    if 'mail' in yaml_config:
+                        config['mail'].update(yaml_config['mail'])
+                    if 'recipients' in yaml_config:
+                        config['recipients'] = yaml_config['recipients']
+                    if 'report' in yaml_config:
+                        config['report'].update(yaml_config['report'])
+        except Exception as e:
+            print(f'加载配置文件失败: {e}')
+
+    return config
+
+app.config.update(load_config())
 
 class LogAnalyzer:
     def __init__(self, log_content):
@@ -139,6 +184,280 @@ class LogAnalyzer:
             return self.log_lines[line_idx]
         return None
 
+def generate_word_report(test_cases, output_path):
+    doc = Document()
+
+    title = doc.add_heading(app.config['report']['title'], 0)
+    title.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+
+    report_time = datetime.now().strftime('%Y年%m月%d日 %H:%M:%S')
+    doc.add_paragraph(f'报告生成时间: {report_time}')
+    doc.add_paragraph(f'生成单位: {app.config["report"]["company"]}')
+
+    doc.add_paragraph()
+
+    total = len(test_cases)
+    errors = sum(1 for tc in test_cases if tc['has_error'])
+    normal = total - errors
+
+    summary = doc.add_heading('一、总体统计', level=1)
+
+    summary_info = doc.add_paragraph()
+    summary_info.add_run('测试用例总数: ').bold = True
+    summary_info.add_run(str(total))
+
+    normal_para = doc.add_paragraph()
+    normal_para.add_run('正常用例: ').bold = True
+    normal_run = normal_para.add_run(str(normal))
+    normal_run.font.color.rgb = RGBColor(0x00, 0xC0, 0x00)
+
+    error_para = doc.add_paragraph()
+    error_para.add_run('异常用例: ').bold = True
+    error_run = error_para.add_run(str(errors))
+    error_run.font.color.rgb = RGBColor(0xC0, 0x00, 0x00)
+
+    doc.add_paragraph()
+
+    detail = doc.add_heading('二、测试用例详情', level=1)
+
+    table = doc.add_table(rows=1, cols=8)
+    table.style = 'Light Grid Accent 1'
+
+    header_cells = table.rows[0].cells
+    header_cells[0].text = '测试用例ID'
+    header_cells[1].text = '组件模块'
+    header_cells[2].text = '组件中文名'
+    header_cells[3].text = '组件分类'
+    header_cells[4].text = '组件方法名'
+    header_cells[5].text = '组件插件包中文名'
+    header_cells[6].text = '组件唯一标识'
+    header_cells[7].text = '运行结果'
+
+    for cell in header_cells:
+        cell.paragraphs[0].runs[0].font.bold = True
+        cell.paragraphs[0].alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+
+    for test_case in test_cases:
+        row_cells = table.add_row().cells
+        comp = test_case['component_info']
+
+        row_cells[0].text = f'测试用例{test_case["test_case_id"]}'
+        row_cells[0].paragraphs[0].runs[0].font.bold = True
+
+        row_cells[1].text = comp.get('module', '')
+        row_cells[2].text = comp.get('name_cn', '')
+        row_cells[3].text = comp.get('category', '')
+        row_cells[4].text = comp.get('method', '')
+        row_cells[5].text = comp.get('plugin_name', '')
+        row_cells[6].text = comp.get('unique_id', '')
+
+        status = '正常' if not test_case['has_error'] else '异常'
+        row_cells[7].text = status
+        row_cells[7].paragraphs[0].alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+
+        if test_case['has_error']:
+            row_cells[7].paragraphs[0].runs[0].font.bold = True
+            row_cells[7].paragraphs[0].runs[0].font.color.rgb = RGBColor(0xC0, 0x00, 0x00)
+        else:
+            row_cells[7].paragraphs[0].runs[0].font.color.rgb = RGBColor(0x00, 0xC0, 0x00)
+
+    doc.save(output_path)
+    return output_path
+
+def send_email_report(recipients, word_file_path, report_url):
+    from_email = app.config['mail']['from_email']
+    password = app.config['mail']['password']
+
+    if not from_email or not password:
+        return {'success': False, 'error': '邮件配置未设置，请在 config.yaml 中配置 from_email 和 password'}
+
+    msg = MIMEMultipart()
+    msg['From'] = from_email
+    msg['To'] = ', '.join(recipients)
+    msg['Subject'] = app.config['report']['title']
+
+    body = f'''
+    <!DOCTYPE html>
+    <html lang="zh-CN">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            * {{
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }}
+            body {{
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                background: #f5f7fa;
+                padding: 40px 20px;
+            }}
+            .container {{
+                max-width: 800px;
+                margin: 0 auto;
+                background: white;
+                border-radius: 12px;
+                overflow: hidden;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            }}
+            .header {{
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 40px 30px;
+                text-align: center;
+            }}
+            .header h1 {{
+                font-size: 28px;
+                margin-bottom: 10px;
+                font-weight: 600;
+            }}
+            .header p {{
+                opacity: 0.9;
+                font-size: 14px;
+            }}
+            .content {{
+                padding: 40px 30px;
+            }}
+            .greeting {{
+                font-size: 16px;
+                color: #333;
+                margin-bottom: 20px;
+                line-height: 1.6;
+            }}
+            .info-box {{
+                background: #f8f9ff;
+                border-left: 4px solid #667eea;
+                padding: 20px;
+                margin: 25px 0;
+                border-radius: 6px;
+            }}
+            .info-box h3 {{
+                color: #667eea;
+                font-size: 18px;
+                margin-bottom: 15px;
+            }}
+            .info-box p {{
+                color: #555;
+                font-size: 14px;
+                line-height: 1.8;
+                margin-bottom: 10px;
+            }}
+            .link-button {{
+                display: inline-block;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 15px 30px;
+                border-radius: 8px;
+                text-decoration: none;
+                font-weight: 600;
+                margin: 20px 0;
+                box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            }}
+            .link-button:hover {{
+                transform: translateY(-2px);
+                box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+            }}
+            .footer {{
+                background: #f8f9ff;
+                padding: 20px 30px;
+                text-align: center;
+                border-top: 1px solid #e0e0e0;
+            }}
+            .footer p {{
+                color: #666;
+                font-size: 13px;
+            }}
+            .stats {{
+                display: flex;
+                justify-content: space-around;
+                background: white;
+                padding: 20px;
+                border-radius: 8px;
+                margin: 20px 0;
+                border: 1px solid #e0e0e0;
+            }}
+            .stat-item {{
+                text-align: center;
+            }}
+            .stat-value {{
+                font-size: 28px;
+                font-weight: bold;
+                margin-bottom: 5px;
+            }}
+            .stat-label {{
+                color: #666;
+                font-size: 12px;
+            }}
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>{app.config['report']['title']}</h1>
+                <p>{app.config['report']['company']}</p>
+            </div>
+            
+            <div class="content">
+                <p class="greeting">您好，</p>
+                
+                <p class="greeting">Engine Logs 分析报告已生成完成，以下是本次分析的概况：</p>
+                
+                <div class="info-box">
+                    <h3>报告概况</h3>
+                    <p><strong>生成时间：</strong>{datetime.now().strftime('%Y年%m月%d日 %H:%M:%S')}</p>
+                </div>
+                
+                <p style="text-align: center; color: #333; font-size: 16px;">
+                    <a href="{report_url}" class="link-button">查看在线分析报告</a>
+                </p>
+                
+                <div class="info-box">
+                    <h3>附件说明</h3>
+                    <p>详细的分析报告已作为附件发送给您，文件格式为 Word 文档（.docx），您可以下载后离线查看。</p>
+                    <p>附件中包含：</p>
+                    <ul style="margin-left: 20px; color: #555; font-size: 14px; line-height: 1.8;">
+                        <li>测试用例执行概况统计</li>
+                        <li>每个测试用例的详细信息</li>
+                        <li>异常用例的错误信息</li>
+                    </ul>
+                </div>
+                
+                <p class="greeting">如有任何疑问，请随时联系我们。</p>
+            </div>
+            
+            <div class="footer">
+                <p>此邮件由 Engine Logs 分析工具自动发送</p>
+                <p>{datetime.now().strftime('%Y年%m月%d日')}</p>
+            </div>
+        </div>
+    </body>
+    </html>
+    '''
+
+    msg.attach(MIMEText(body, 'html', 'utf-8'))
+
+    with open(word_file_path, 'rb') as f:
+        part = MIMEApplication(f.read())
+        part.add_header('Content-Disposition', 'attachment', filename=os.path.basename(word_file_path))
+        msg.attach(part)
+
+    try:
+        use_ssl = app.config['mail']['port'] == 465
+        if use_ssl:
+            server = smtplib.SMTP_SSL(app.config['mail']['server'], app.config['mail']['port'])
+        else:
+            server = smtplib.SMTP(app.config['mail']['server'], app.config['mail']['port'])
+            if app.config['mail']['use_tls']:
+                server.starttls()
+        server.login(from_email, password)
+        server.send_message(msg)
+        server.quit()
+
+        return {'success': True, 'message': '邮件发送成功'}
+    except Exception as e:
+        return {'success': False, 'error': str(e)}
+
 @app.route('/')
 def index():
     return '<script>window.location.href="/analysis"</script>'
@@ -176,7 +495,7 @@ def get_log_context(error_line):
             all_lines = f.readlines()
 
         total_lines = len(all_lines)
-        context_size = 500  # 错误行前后各500行，总共1000行
+        context_size = 500
 
         start = max(0, error_line - context_size)
         end = min(total_lines, error_line + context_size + 1)
@@ -200,5 +519,50 @@ def get_log_context(error_line):
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+import atexit
+
+def cleanup():
+    pass
+
+atexit.register(cleanup)
+
+def generate_startup_report():
+    try:
+        with open(app.config['LOG_FILE_PATH'], 'r', encoding='utf-8') as f:
+            log_content = f.read()
+
+        analyzer = LogAnalyzer(log_content)
+        test_cases = analyzer.analyze()
+
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        filename = f'engine_log_report_{timestamp}.docx'
+        output_path = os.path.join(app.config['OUTPUT_FOLDER'], filename)
+
+        generate_word_report(test_cases, output_path)
+
+        recipients = app.config.get('recipients', [])
+        
+        if recipients:
+            from_email = app.config['mail']['from_email']
+            password = app.config['mail']['password']
+            
+            if from_email and password:
+                report_url = 'http://localhost:5000/analysis'
+                email_result = send_email_report(recipients, output_path, report_url)
+                print(f'邮件发送结果: {email_result}')
+            else:
+                print('邮件配置未设置，跳过邮件发送')
+        else:
+            print('未配置收件人，跳过邮件发送')
+            
+        print(f'报告已生成: {output_path}')
+    except Exception as e:
+        print(f'启动时生成报告失败: {e}')
+
 if __name__ == '__main__':
+    import os
+    if os.environ.get('WERKZEUG_RUN_MAIN') != 'true':
+        print('正在生成报告并发送邮件...')
+        generate_startup_report()
+        print('报告生成完成，启动 Web 服务...')
     app.run(host='0.0.0.0', port=5000, debug=True)
