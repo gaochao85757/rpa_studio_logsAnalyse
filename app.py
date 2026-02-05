@@ -16,7 +16,7 @@ app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 app.config['STATIC_FOLDER'] = 'static'
 #app.config['LOG_FILE_PATH'] = 'static/engine.log'
-app.config['LOG_FILE_PATH'] = '/home/admin/.config/Z-Factory/logs/2026-02-05/engine_logs/engine.log'
+app.config['LOG_FILE_PATH'] = os.path.expanduser('~/.config/Z-Factory/logs/') + datetime.now().strftime('%Y-%m-%d') + '/engine_logs/engine.log'
 app.config['OUTPUT_FOLDER'] = 'outputs'
 app.config['CONFIG_FILE'] = 'config.yaml'
 
