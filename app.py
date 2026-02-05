@@ -15,7 +15,8 @@ app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 app.config['STATIC_FOLDER'] = 'static'
-app.config['LOG_FILE_PATH'] = 'static/engine.log'
+#app.config['LOG_FILE_PATH'] = 'static/engine.log'
+app.config['LOG_FILE_PATH'] = '/home/admin/.config/Z-Factory/logs/2026-02-05/engine_logs/engine.log'
 app.config['OUTPUT_FOLDER'] = 'outputs'
 app.config['CONFIG_FILE'] = 'config.yaml'
 
@@ -565,4 +566,4 @@ if __name__ == '__main__':
         print('正在生成报告并发送邮件...')
         generate_startup_report()
         print('报告生成完成，启动 Web 服务...')
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='127.0.0.0', port=5000, debug=True)
