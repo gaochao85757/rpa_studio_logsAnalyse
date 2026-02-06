@@ -548,7 +548,7 @@ def generate_startup_report():
             password = app.config['mail']['password']
             
             if from_email and password:
-                report_url = 'http://localhost:5000/analysis'
+                report_url = 'http://127.0.0.1:5000/analysis'
                 email_result = send_email_report(recipients, output_path, report_url)
                 print(f'邮件发送结果: {email_result}')
             else:
