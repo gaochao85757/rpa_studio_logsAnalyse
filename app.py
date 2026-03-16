@@ -1,10 +1,11 @@
-from flask import Flask, render_template, request, jsonify, send_from_directory, send_file
+from flask import Flask, render_template, jsonify, send_from_directory
 import os
 import re
 import yaml
+import socket
 from datetime import datetime
 from docx import Document
-from docx.shared import Inches, Pt, RGBColor
+from docx.shared import RGBColor
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 import smtplib
 from email.mime.text import MIMEText
@@ -58,6 +59,17 @@ def load_config():
 
 app.config.update(load_config())
 
+def get_local_ip():
+    """获取本机局域网IP地址"""
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(('8.8.8.8', 80))
+        ip = s.getsockname()[0]
+        s.close()
+        return ip
+    except Exception:
+        return '127.0.0.1'
+
 class LogAnalyzer:
     def __init__(self, log_content):
         self.log_content = log_content
@@ -105,10 +117,6 @@ class LogAnalyzer:
 
         return self.test_cases
 
-    def _extract_timestamp(self, line):
-        match = re.search(r'(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})', line)
-        return match.group(1) if match else ''
-
     def _process_test_case(self, test_case, lines):
         component_info = {
             'module': '',
@@ -148,42 +156,6 @@ class LogAnalyzer:
 
         test_case['component_info'] = component_info
         self.test_cases.append(test_case)
-
-    def _extract_component_info(self, line):
-        patterns = {
-            'module': r'组件模块[为]?[：:]\s*(\S+)',
-            'name_cn': r'组件中文名[为]?[：:]\s*(.+?)(?:\s+组件|$)',
-            'category': r'组件分类[为]?[：:]\s*(\[[^\]]+\]|[^\s,]+)',
-            'method': r'组件方法名[为]?[：:]\s*(\S+)',
-            'plugin_name': r'组件插件包中文名[为]?[：:]\s*(\[[^\]]+\]|[^\s,]+)',
-            'unique_id': r'组件唯一标识[为]?[：:]\s*(\S+)'
-        }
-
-        component = {}
-        for key, pattern in patterns.items():
-            match = re.search(pattern, line)
-            if match:
-                value = match.group(1)
-                if value and value != '为':
-                    component[key] = value
-
-        if component:
-            return component
-        return None
-
-    def _get_context(self, line_idx, context_lines=10):
-        start = max(0, line_idx - context_lines)
-        end = min(len(self.log_lines), line_idx + context_lines + 1)
-        return {
-            'start': start,
-            'end': end,
-            'lines': [{'line_num': i, 'content': self.log_lines[i]} for i in range(start, end)]
-        }
-
-    def get_line_content(self, line_idx):
-        if 0 <= line_idx < len(self.log_lines):
-            return self.log_lines[line_idx]
-        return None
 
 def generate_word_report(test_cases, output_path):
     doc = Document()
@@ -520,12 +492,10 @@ def get_log_context(error_line):
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-import atexit
-
-def cleanup():
-    pass
-
-atexit.register(cleanup)
+@app.route('/report/<timestamp>')
+def view_report(timestamp):
+    """带时间戳的报告访问路由"""
+    return render_template('log_analysis.html')
 
 def generate_startup_report():
     try:
@@ -535,35 +505,38 @@ def generate_startup_report():
         analyzer = LogAnalyzer(log_content)
         test_cases = analyzer.analyze()
 
-        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
         filename = f'engine_log_report_{timestamp}.docx'
         output_path = os.path.join(app.config['OUTPUT_FOLDER'], filename)
 
         generate_word_report(test_cases, output_path)
 
         recipients = app.config.get('recipients', [])
-        
+
         if recipients:
             from_email = app.config['mail']['from_email']
             password = app.config['mail']['password']
-            
+
             if from_email and password:
-                report_url = 'http://127.0.0.1:5000/analysis'
+                local_ip = get_local_ip()
+                report_url = f'http://{local_ip}:5000/report/{timestamp}'
                 email_result = send_email_report(recipients, output_path, report_url)
                 print(f'邮件发送结果: {email_result}')
+                print(f'报告访问地址: {report_url}')
             else:
                 print('邮件配置未设置，跳过邮件发送')
         else:
             print('未配置收件人，跳过邮件发送')
-            
+
         print(f'报告已生成: {output_path}')
     except Exception as e:
         print(f'启动时生成报告失败: {e}')
 
 if __name__ == '__main__':
-    import os
     if os.environ.get('WERKZEUG_RUN_MAIN') != 'true':
         print('正在生成报告并发送邮件...')
         generate_startup_report()
         print('报告生成完成，启动 Web 服务...')
-    app.run(host='127.0.0.0', port=5000, debug=True)
+    local_ip = get_local_ip()
+    print(f'\n访问地址: http://{local_ip}:5000/analysis')
+    app.run(host='0.0.0.0', port=5000, debug=True)
