@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, send_from_directory
+from flask import Flask, render_template, jsonify, send_from_directory, request
 import os
 import re
 import yaml
@@ -237,7 +237,7 @@ def generate_word_report(test_cases, output_path):
     doc.save(output_path)
     return output_path
 
-def send_email_report(recipients, word_file_path, report_url):
+def send_email_report(recipients, word_file_path, report_url, timestamp):
     from_email = app.config['mail']['from_email']
     password = app.config['mail']['password']
 
@@ -247,7 +247,7 @@ def send_email_report(recipients, word_file_path, report_url):
     msg = MIMEMultipart()
     msg['From'] = from_email
     msg['To'] = ', '.join(recipients)
-    msg['Subject'] = app.config['report']['title']
+    msg['Subject'] = f"{app.config['report']['title']} - {timestamp}"
 
     body = f'''
     <!DOCTYPE html>
@@ -497,7 +497,55 @@ def view_report(timestamp):
     """带时间戳的报告访问路由"""
     return render_template('log_analysis.html')
 
+@app.route('/upload', methods=['POST'])
+def upload_log():
+    """接收上传的engine.log文件并生成分析报告"""
+    try:
+        if 'file' not in request.files:
+            return jsonify({'success': False, 'error': '未找到上传文件'}), 400
+
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({'success': False, 'error': '未选择文件'}), 400
+
+        log_content = file.read().decode('utf-8')
+
+        analyzer = LogAnalyzer(log_content)
+        test_cases = analyzer.analyze()
+
+        timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
+        filename = f'engine_log_report_{timestamp}.docx'
+        output_path = os.path.join(app.config['OUTPUT_FOLDER'], filename)
+
+        generate_word_report(test_cases, output_path)
+
+        local_ip = get_local_ip()
+        report_url = f'http://{local_ip}:5000/report/{timestamp}'
+
+        recipients = app.config.get('recipients', [])
+        if recipients:
+            from_email = app.config['mail']['from_email']
+            password = app.config['mail']['password']
+
+            if from_email and password:
+                send_email_report(recipients, output_path, report_url, timestamp)
+
+        return jsonify({
+            'success': True,
+            'report_url': report_url,
+            'timestamp': timestamp,
+            'total': len(test_cases),
+            'errors': sum(1 for tc in test_cases if tc['has_error'])
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
 def generate_startup_report():
+    if not os.path.exists(app.config['LOG_FILE_PATH']):
+        print(f'日志文件不存在: {app.config["LOG_FILE_PATH"]}')
+        print('跳过报告生成和邮件发送，仅启动服务')
+        return
+
     try:
         with open(app.config['LOG_FILE_PATH'], 'r', encoding='utf-8') as f:
             log_content = f.read()
@@ -520,7 +568,7 @@ def generate_startup_report():
             if from_email and password:
                 local_ip = get_local_ip()
                 report_url = f'http://{local_ip}:5000/report/{timestamp}'
-                email_result = send_email_report(recipients, output_path, report_url)
+                email_result = send_email_report(recipients, output_path, report_url, timestamp)
                 print(f'邮件发送结果: {email_result}')
                 print(f'报告访问地址: {report_url}')
             else:

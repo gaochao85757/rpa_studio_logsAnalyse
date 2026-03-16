@@ -5,9 +5,21 @@
 ## 功能特性
 
 ### 自动分析
-- 自动读取并分析 `/static/engine.log` 文件
+- 支持启动时自动读取本地日志文件（默认路径：`~/.config/Z-Factory/logs/YYYY-MM-DD/engine_logs/engine.log`）
+- 支持通过API接口上传日志文件进行实时分析
 - 从 `log_service.py` 的 `Log.Info : 测试用例XXX开始` 到 `测试用例XXX结束`
 - 自动识别 ERROR 日志中的异常信息
+
+### 局域网访问
+- 自动获取本机局域网IP地址
+- 支持同一WiFi下的其他设备访问
+- 每次生成带时间戳的唯一报告链接（格式：`http://x.x.x.x:5000/report/YYYYMMDDHHmmss`）
+
+### 在线文件上传
+- 支持通过POST接口上传engine.log文件
+- 自动分析上传的日志文件
+- 生成Word报告并发送邮件通知
+- 返回带时间戳的报告访问链接
 
 ### 组件信息提取
 - 组件模块
@@ -66,23 +78,60 @@ cp config.yaml.example config.yaml
 cp /path/to/engine.log static/
 ```
 
-### 4. 运行应用
+### 3. 运行应用
 
 ```bash
 python3 app.py
 ```
 
-应用启动后会自动生成 Word 报告，如果配置了邮件信息，会自动发送邮件。
+应用启动后会：
+1. 自动读取本地日志文件并生成Word报告
+2. 如果配置了邮件信息，自动发送邮件通知
+3. 显示局域网访问地址（如：`http://192.168.1.100:5000/analysis`）
+4. 显示带时间戳的报告链接（如：`http://192.168.1.100:5000/report/20260316185030`）
 
 ## 使用方法
 
-1. 访问 http://localhost:5000/analysis 查看自动生成的分析报告
-2. 浏览测试用例列表，查看执行状态和组件信息
-3. 错误信息显示：
+### 方式一：访问Web界面
+
+1. 启动应用后，在浏览器访问显示的局域网地址
+2. 同一WiFi下的其他设备也可以通过该地址访问
+3. 浏览测试用例列表，查看执行状态和组件信息
+4. 错误信息显示：
    - 默认显示简略错误（150字符）
    - 点击可展开查看完整内容（250字符）
    - 再次点击可折叠
-4. 点击"查看日志上下文"链接查看错误行前后各500行的日志
+5. 点击"查看日志上下文"链接查看错误行前后各500行的日志
+
+### 方式二：通过API上传日志文件
+
+使用curl命令上传日志文件：
+
+```bash
+curl -X POST -F "file=@/path/to/engine.log" http://192.168.1.100:5000/upload
+```
+
+返回示例：
+```json
+{
+  "success": true,
+  "report_url": "http://192.168.1.100:5000/report/20260316185030",
+  "timestamp": "20260316185030",
+  "total": 10,
+  "errors": 2
+}
+```
+
+也可以使用Python脚本上传：
+
+```python
+import requests
+
+url = "http://192.168.1.100:5000/upload"
+files = {'file': open('engine.log', 'rb')}
+response = requests.post(url, files=files)
+print(response.json())
+```
 
 ## 界面说明
 
@@ -107,7 +156,57 @@ python3 app.py
 
 ## API 接口
 
+### GET 接口
+
 - `GET /analysis` - 查看分析页面
+- `GET /report/<timestamp>` - 查看指定时间戳的报告页面
 - `GET /analyze/default` - 获取默认日志文件的分析结果（JSON）
 - `GET /engine.log` - 读取日志文件
 - `GET /log/context/<error_line>` - 获取错误行的日志上下文（前后各500行）
+
+### POST 接口
+
+- `POST /upload` - 上传engine.log文件并生成分析报告
+  - 参数：`file` (multipart/form-data)
+  - 返回：
+    ```json
+    {
+      "success": true,
+      "report_url": "http://x.x.x.x:5000/report/YYYYMMDDHHmmss",
+      "timestamp": "YYYYMMDDHHmmss",
+      "total": 10,
+      "errors": 2
+    }
+    ```
+
+## 更新日志
+
+### v2.0 (2026-03-16)
+
+**新增功能：**
+1. 局域网访问支持
+   - 自动获取本机局域网IP地址
+   - Flask监听地址改为0.0.0.0，支持局域网内其他设备访问
+   - 启动时显示局域网访问地址
+
+2. 带时间戳的报告链接
+   - 每次生成报告都有唯一的时间戳标识
+   - 报告URL格式：`http://x.x.x.x:5000/report/YYYYMMDDHHmmss`
+   - 新增 `/report/<timestamp>` 路由
+
+3. 在线文件上传接口
+   - 新增 `POST /upload` 接口
+   - 支持上传engine.log文件进行实时分析
+   - 自动生成Word报告并发送邮件
+   - 返回带时间戳的报告访问链接
+
+**改进：**
+- 日志文件路径改为读取本地配置目录：`~/.config/Z-Factory/logs/YYYY-MM-DD/engine_logs/engine.log`
+- 邮件中的报告链接使用局域网IP和时间戳
+- 优化报告生成逻辑，支持多种触发方式（启动时/API上传）
+
+### v1.0
+- 初始版本
+- 基础日志分析功能
+- Word报告生成
+- 邮件发送功能
