@@ -237,12 +237,19 @@ def generate_word_report(test_cases, output_path):
     doc.save(output_path)
     return output_path
 
-def send_email_report(recipients, word_file_path, report_url, timestamp):
+def send_email_report(recipients, word_file_path, report_url, timestamp, summary=None):
     from_email = app.config['mail']['from_email']
     password = app.config['mail']['password']
 
     if not from_email or not password:
         return {'success': False, 'error': '邮件配置未设置，请在 config.yaml 中配置 from_email 和 password'}
+
+    if summary is None:
+        summary = {'total': 0, 'normal': 0, 'errors': 0}
+
+    total = summary.get('total', 0)
+    normal = summary.get('normal', 0)
+    errors = summary.get('errors', 0)
 
     msg = MIMEMultipart()
     msg['From'] = from_email
@@ -379,6 +386,21 @@ def send_email_report(recipients, word_file_path, report_url, timestamp):
                 <div class="info-box">
                     <h3>报告概况</h3>
                     <p><strong>生成时间：</strong>{datetime.now().strftime('%Y年%m月%d日 %H:%M:%S')}</p>
+                </div>
+                
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-value" style="color: #667eea;">{total}</div>
+                        <div class="stat-label">总测试用例</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" style="color: #28a745;">{normal}</div>
+                        <div class="stat-label">成功用例</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" style="color: #dc3545;">{errors}</div>
+                        <div class="stat-label">失败用例</div>
+                    </div>
                 </div>
                 
                 <p style="text-align: center; color: #333; font-size: 16px;">
@@ -528,7 +550,11 @@ def upload_log():
             password = app.config['mail']['password']
 
             if from_email and password:
-                send_email_report(recipients, output_path, report_url, timestamp)
+                total = len(test_cases)
+                errors = sum(1 for tc in test_cases if tc['has_error'])
+                normal = total - errors
+                summary = {'total': total, 'normal': normal, 'errors': errors}
+                send_email_report(recipients, output_path, report_url, timestamp, summary)
 
         return jsonify({
             'success': True,
@@ -568,7 +594,11 @@ def generate_startup_report():
             if from_email and password:
                 local_ip = get_local_ip()
                 report_url = f'http://{local_ip}:5000/report/{timestamp}'
-                email_result = send_email_report(recipients, output_path, report_url, timestamp)
+                total = len(test_cases)
+                errors = sum(1 for tc in test_cases if tc['has_error'])
+                normal = total - errors
+                summary = {'total': total, 'normal': normal, 'errors': errors}
+                email_result = send_email_report(recipients, output_path, report_url, timestamp, summary)
                 print(f'邮件发送结果: {email_result}')
                 print(f'报告访问地址: {report_url}')
             else:
