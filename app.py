@@ -82,8 +82,8 @@ class LogAnalyzer:
         in_test_case = False
 
         for idx, line in enumerate(self.log_lines):
-            match_start = re.search(r'log_service\.py.*?Log\.Info\s*:\s*测试用例(\d+)\s*开始', line)
-            match_end = re.search(r'log_service\.py.*?Log\.Info\s*:\s*测试用例(\d+)\s*结束', line)
+            match_start = re.search(r'.py.*?Log\.Info\s*:\s*测试用例(.+?)\s*开始', line)
+            match_end = re.search(r'.py.*?Log\.Info\s*:\s*测试用例(.+?)\s*结束', line)
 
             if match_start:
                 test_case_id = match_start.group(1)
