@@ -334,6 +334,10 @@
         </div>
     </div>
 
+    {% if report_data %}
+    <script id="reportData" type="application/json">{{ report_data | tojson }}</script>
+    {% endif %}
+
     <div class="modal" id="errorModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -351,37 +355,23 @@
         const closeModal = document.getElementById('closeModal');
         const errorDetail = document.getElementById('errorDetail');
 
-        function getTimestampFromUrl() {
-            const path = window.location.pathname;
-            const match = path.match(/\/report\/(\d+)/);
-            return match ? match[1] : null;
-        }
-
         async function loadLogAndAnalyze() {
-            const timestamp = getTimestampFromUrl();
+            const reportDataElement = document.getElementById('reportData');
+            const embeddedData = reportDataElement ? JSON.parse(reportDataElement.textContent) : null;
+
+            if (embeddedData) {
+                displayResults(embeddedData);
+                return;
+            }
 
             try {
-                let data;
-                if (timestamp) {
-                    const response = await fetch(`/report/data/${timestamp}`);
-                    const result = await response.json();
-                    if (result.success) {
-                        data = result.data;
-                        data.errors = data.errors;
-                    } else {
-                        document.getElementById('tableBody').innerHTML = `<tr><td colspan="8" style="text-align:center; padding: 40px; color: #999;">${result.error || '加载失败'}</td></tr>`;
-                        return;
-                    }
+                const response = await fetch('/analyze/default');
+                const data = await response.json();
+                if (data.success) {
+                    displayResults(data);
                 } else {
-                    const response = await fetch('/analyze/default');
-                    data = await response.json();
-                    if (!data.success) {
-                        document.getElementById('tableBody').innerHTML = `<tr><td colspan="8" style="text-align:center; padding: 40px; color: #999;">${data.error || '加载失败'}</td></tr>`;
-                        return;
-                    }
+                    document.getElementById('tableBody').innerHTML = `<tr><td colspan="8" style="text-align:center; padding: 40px; color: #999;">${data.error || '加载失败'}</td></tr>`;
                 }
-
-                displayResults(data);
             } catch (error) {
                 console.error('加载日志失败:', error);
                 document.getElementById('tableBody').innerHTML = '<tr><td colspan="8" style="text-align:center; padding: 40px; color: #999;">加载日志失败，请确保 engine.log 文件存在</td></tr>';

@@ -519,20 +519,14 @@ def get_log_context(error_line):
 def view_report(timestamp):
     json_path = os.path.join(app.config['OUTPUT_FOLDER'], f'report_data_{timestamp}.json')
     if os.path.exists(json_path):
-        return render_template('log_analysis.html', timestamp=timestamp)
-    return render_template('log_analysis.html')
-
-@app.route('/report/data/<timestamp>')
-def get_report_data(timestamp):
-    json_path = os.path.join(app.config['OUTPUT_FOLDER'], f'report_data_{timestamp}.json')
-    if os.path.exists(json_path):
         try:
             with open(json_path, 'r', encoding='utf-8') as f:
                 data = json.load(f)
-            return jsonify({'success': True, 'data': data})
+            return render_template('log_analysis.html', report_data=data)
         except Exception as e:
-            return jsonify({'success': False, 'error': str(e)}), 500
-    return jsonify({'success': False, 'error': '报告数据不存在'}), 404
+            return render_template('log_analysis.html', report_data=None)
+    return render_template('log_analysis.html', report_data=None)
+
 
 @app.route('/upload', methods=['POST'])
 def upload_log():
