@@ -351,16 +351,37 @@
         const closeModal = document.getElementById('closeModal');
         const errorDetail = document.getElementById('errorDetail');
 
-        async function loadLogAndAnalyze() {
-            try {
-                const response = await fetch('/analyze/default');
-                const data = await response.json();
+        function getTimestampFromUrl() {
+            const path = window.location.pathname;
+            const match = path.match(/\/report\/(\d+)/);
+            return match ? match[1] : null;
+        }
 
-                if (data.success) {
-                    displayResults(data);
+        async function loadLogAndAnalyze() {
+            const timestamp = getTimestampFromUrl();
+
+            try {
+                let data;
+                if (timestamp) {
+                    const response = await fetch(`/report/data/${timestamp}`);
+                    const result = await response.json();
+                    if (result.success) {
+                        data = result.data;
+                        data.errors = data.errors;
+                    } else {
+                        document.getElementById('tableBody').innerHTML = `<tr><td colspan="8" style="text-align:center; padding: 40px; color: #999;">${result.error || '加载失败'}</td></tr>`;
+                        return;
+                    }
                 } else {
-                    document.getElementById('tableBody').innerHTML = `<tr><td colspan="8" style="text-align:center; padding: 40px; color: #999;">${data.error || '加载失败'}</td></tr>`;
+                    const response = await fetch('/analyze/default');
+                    data = await response.json();
+                    if (!data.success) {
+                        document.getElementById('tableBody').innerHTML = `<tr><td colspan="8" style="text-align:center; padding: 40px; color: #999;">${data.error || '加载失败'}</td></tr>`;
+                        return;
+                    }
                 }
+
+                displayResults(data);
             } catch (error) {
                 console.error('加载日志失败:', error);
                 document.getElementById('tableBody').innerHTML = '<tr><td colspan="8" style="text-align:center; padding: 40px; color: #999;">加载日志失败，请确保 engine.log 文件存在</td></tr>';

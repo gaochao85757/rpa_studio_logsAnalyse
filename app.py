@@ -8,6 +8,7 @@ from docx import Document
 from docx.shared import RGBColor
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 import smtplib
+import json
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.application import MIMEApplication
@@ -516,8 +517,22 @@ def get_log_context(error_line):
 
 @app.route('/report/<timestamp>')
 def view_report(timestamp):
-    """带时间戳的报告访问路由"""
+    json_path = os.path.join(app.config['OUTPUT_FOLDER'], f'report_data_{timestamp}.json')
+    if os.path.exists(json_path):
+        return render_template('log_analysis.html', timestamp=timestamp)
     return render_template('log_analysis.html')
+
+@app.route('/report/data/<timestamp>')
+def get_report_data(timestamp):
+    json_path = os.path.join(app.config['OUTPUT_FOLDER'], f'report_data_{timestamp}.json')
+    if os.path.exists(json_path):
+        try:
+            with open(json_path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            return jsonify({'success': True, 'data': data})
+        except Exception as e:
+            return jsonify({'success': False, 'error': str(e)}), 500
+    return jsonify({'success': False, 'error': '报告数据不存在'}), 404
 
 @app.route('/upload', methods=['POST'])
 def upload_log():
@@ -538,6 +553,15 @@ def upload_log():
         timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
         filename = f'engine_log_report_{timestamp}.docx'
         output_path = os.path.join(app.config['OUTPUT_FOLDER'], filename)
+
+        report_data = {
+            'test_cases': test_cases,
+            'total': len(test_cases),
+            'errors': sum(1 for tc in test_cases if tc['has_error'])
+        }
+        json_path = os.path.join(app.config['OUTPUT_FOLDER'], f'report_data_{timestamp}.json')
+        with open(json_path, 'w', encoding='utf-8') as f:
+            json.dump(report_data, f, ensure_ascii=False, indent=2)
 
         generate_word_report(test_cases, output_path)
 
@@ -582,6 +606,15 @@ def generate_startup_report():
         timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
         filename = f'engine_log_report_{timestamp}.docx'
         output_path = os.path.join(app.config['OUTPUT_FOLDER'], filename)
+
+        report_data = {
+            'test_cases': test_cases,
+            'total': len(test_cases),
+            'errors': sum(1 for tc in test_cases if tc['has_error'])
+        }
+        json_path = os.path.join(app.config['OUTPUT_FOLDER'], f'report_data_{timestamp}.json')
+        with open(json_path, 'w', encoding='utf-8') as f:
+            json.dump(report_data, f, ensure_ascii=False, indent=2)
 
         generate_word_report(test_cases, output_path)
 
