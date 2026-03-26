@@ -330,7 +330,13 @@
                 </table>
             </div>
 
-            <div class="result-message" id="resultMessage"></div>
+            <div class="result-message" id="resultMessage">
+                {% if error %}
+                <div style="background: #fff3cd; border: 1px solid #ffc107; border-radius: 8px; padding: 20px; margin: 20px 0; text-align: center;">
+                    <span style="color: #856404; font-size: 16px;">{{ error }}</span>
+                </div>
+                {% endif %}
+            </div>
         </div>
     </div>
 
@@ -361,6 +367,13 @@
 
             if (embeddedData) {
                 displayResults(embeddedData);
+                return;
+            }
+
+            const path = window.location.pathname;
+            const isReportPage = path.match(/\/report\/\d+/);
+            if (isReportPage) {
+                document.getElementById('tableBody').innerHTML = '<tr><td colspan="8" style="text-align:center; padding: 40px; color: #999;">报告数据不存在或加载失败</td></tr>';
                 return;
             }
 

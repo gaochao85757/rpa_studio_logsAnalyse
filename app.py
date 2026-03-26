@@ -517,16 +517,25 @@ def get_log_context(error_line):
 
 @app.route('/report/<timestamp>')
 @app.route('/report/<timestamp>')
+@app.route('/report/<timestamp>')
 def view_report(timestamp):
     json_path = os.path.join(app.config['OUTPUT_FOLDER'], f'report_data_{timestamp}.json')
-    if os.path.exists(json_path):
-        try:
-            with open(json_path, 'r', encoding='utf-8') as f:
-                data = json.load(f)
-            return render_template('log_analysis.html', report_data=data)
-        except Exception as e:
-            print(f'读取报告失败: {e}')
-    return render_template('log_analysis.html', report_data=None)
+    docx_path = os.path.join(app.config['OUTPUT_FOLDER'], f'engine_log_report_{timestamp}.docx')
+    
+    if not os.path.exists(json_path):
+        error_msg = f'报告数据不存在 (timestamp: {timestamp})，请确认报告是否已生成'
+        return render_template('log_analysis.html', report_data=None, error=error_msg)
+    
+    if not os.path.exists(docx_path):
+        error_msg = f'Word 文档不存在 (timestamp: {timestamp})，报告数据可能已损坏'
+        return render_template('log_analysis.html', report_data=None, error=error_msg)
+    
+    try:
+        with open(json_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        return render_template('log_analysis.html', report_data=data)
+    except Exception as e:
+        return render_template('log_analysis.html', report_data=None, error=f'读取报告失败: {str(e)}')
 
 
 @app.route('/upload', methods=['POST'])
