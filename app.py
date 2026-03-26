@@ -8,7 +8,6 @@ from docx import Document
 from docx.shared import RGBColor
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 import smtplib
-import json
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.application import MIMEApplication
@@ -157,6 +156,40 @@ class LogAnalyzer:
 
         test_case['component_info'] = component_info
         self.test_cases.append(test_case)
+
+def parse_docx_report(docx_path):
+    from docx import Document
+    doc = Document(docx_path)
+    tables = doc.tables
+    if not tables:
+        return None
+    
+    table = tables[0]
+    test_cases = []
+    for i, row in enumerate(table.rows):
+        if i == 0:
+            continue
+        cells = row.cells
+        test_case = {
+            'test_case_id': cells[0].text.replace('测试用例', ''),
+            'component_info': {
+                'module': cells[1].text,
+                'name_cn': cells[2].text,
+                'category': cells[3].text,
+                'method': cells[4].text,
+                'plugin_name': cells[5].text,
+                'unique_id': cells[6].text
+            },
+            'has_error': cells[7].text == '异常',
+            'errors': []
+        }
+        test_cases.append(test_case)
+    
+    return {
+        'test_cases': test_cases,
+        'total': len(test_cases),
+        'errors': sum(1 for tc in test_cases if tc['has_error'])
+    }
 
 def generate_word_report(test_cases, output_path):
     doc = Document()
@@ -517,14 +550,14 @@ def get_log_context(error_line):
 
 @app.route('/report/<timestamp>')
 def view_report(timestamp):
-    json_path = os.path.join(app.config['OUTPUT_FOLDER'], f'report_data_{timestamp}.json')
-    if os.path.exists(json_path):
+    docx_path = os.path.join(app.config['OUTPUT_FOLDER'], f'engine_log_report_{timestamp}.docx')
+    if os.path.exists(docx_path):
         try:
-            with open(json_path, 'r', encoding='utf-8') as f:
-                data = json.load(f)
-            return render_template('log_analysis.html', report_data=data)
+            data = parse_docx_report(docx_path)
+            if data:
+                return render_template('log_analysis.html', report_data=data)
         except Exception as e:
-            return render_template('log_analysis.html', report_data=None)
+            print(f'读取报告失败: {e}')
     return render_template('log_analysis.html', report_data=None)
 
 
@@ -547,15 +580,6 @@ def upload_log():
         timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
         filename = f'engine_log_report_{timestamp}.docx'
         output_path = os.path.join(app.config['OUTPUT_FOLDER'], filename)
-
-        report_data = {
-            'test_cases': test_cases,
-            'total': len(test_cases),
-            'errors': sum(1 for tc in test_cases if tc['has_error'])
-        }
-        json_path = os.path.join(app.config['OUTPUT_FOLDER'], f'report_data_{timestamp}.json')
-        with open(json_path, 'w', encoding='utf-8') as f:
-            json.dump(report_data, f, ensure_ascii=False, indent=2)
 
         generate_word_report(test_cases, output_path)
 
@@ -600,15 +624,6 @@ def generate_startup_report():
         timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
         filename = f'engine_log_report_{timestamp}.docx'
         output_path = os.path.join(app.config['OUTPUT_FOLDER'], filename)
-
-        report_data = {
-            'test_cases': test_cases,
-            'total': len(test_cases),
-            'errors': sum(1 for tc in test_cases if tc['has_error'])
-        }
-        json_path = os.path.join(app.config['OUTPUT_FOLDER'], f'report_data_{timestamp}.json')
-        with open(json_path, 'w', encoding='utf-8') as f:
-            json.dump(report_data, f, ensure_ascii=False, indent=2)
 
         generate_word_report(test_cases, output_path)
 
